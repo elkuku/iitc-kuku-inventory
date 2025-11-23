@@ -16,21 +16,19 @@ import {HelperHandlebars, Inventory, KeyInfo} from '../types/Types'
 import {Utility} from './Utility'
 import {LocalStorageHelper} from './LocalStorageHelper'
 
-const KEY_STORAGE = 'plugin-kuku-inventory'
-
 export class DialogHelper {
 
-    private inventoryHelper: InventoryHelper
     private localStorageHelper: LocalStorageHelper
-    private capsuleNames: Map<string, string>
+    private readonly capsuleNames: Map<string, string>
     private handlebars: HelperHandlebars
 
     public constructor(
         private pluginName: string,
         private title: string,
+        private inventoryHelper: InventoryHelper
     ) {
-        this.inventoryHelper = new InventoryHelper()
-        this.localStorageHelper = new LocalStorageHelper(KEY_STORAGE)
+        this.inventoryHelper = inventoryHelper
+        this.localStorageHelper = new LocalStorageHelper()
 
         this.capsuleNames = this.localStorageHelper.loadMap('capsuleNames') ?? new Map()
     }
@@ -163,8 +161,8 @@ export class DialogHelper {
                     return ascending ? aNum - bNum : bNum - aNum
                 }
                 case 'distance': {
-                    const aNum = this.parseDistance(aText)
-                    const bNum = this.parseDistance(bText)
+                    const aNum = Utility.parseDistance(aText)
+                    const bNum = Utility.parseDistance(bText)
                     return ascending ? aNum - bNum : bNum - aNum
                 }
             }
@@ -213,24 +211,6 @@ export class DialogHelper {
         this.localStorageHelper.saveMap('capsuleNames', this.capsuleNames)
 
         alert('Capsule names have been saved - please refresh ;)')
-    }
-
-    private parseDistance(distanceStr: string): number {
-        const match = /^([\d.]+)\s*(\w+)$/.exec(distanceStr.trim())
-
-        if (!match) return 0
-
-        const value = parseFloat(match[1])
-        const unit = match[2].toLowerCase()
-
-        switch (unit) {
-            case 'm':
-                return value
-            case 'km':
-                return value * 1000
-            default:
-                return value
-        }
     }
 
     private processResos(resonators: Map<string, number>) {

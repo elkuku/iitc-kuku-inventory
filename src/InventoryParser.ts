@@ -1,6 +1,5 @@
 import {IngressInventory} from '../types/IngressInventory'
 import {Inventory} from '../types/Types'
-import ContainerItem = IngressInventory.ContainerItem;
 import {Utility} from './Utility'
 
 export class InventoryParser {
@@ -65,7 +64,7 @@ export class InventoryParser {
                     break
                 }
                 case 'KEY_CAPSULE': {
-                    const items: ContainerItem[] = object.container.stackableItems
+                    const items: IngressInventory.ContainerItem[] = object.container.stackableItems
                     inventory.keyCapsules.push({
                         differentiator: object.moniker.differentiator,
                         count: object.container.currentCount,
@@ -117,9 +116,8 @@ export class InventoryParser {
             const coupler = capsuleItem.exampleGameEntity[2].portalCoupler
             const parts = coupler.portalLocation.split(',')
 
-            const guid = coupler.portalGuid
             const key: Inventory.Key = {
-                guid: guid,
+                guid: coupler.portalGuid,
                 title: coupler.portalTitle,
                 lat: Utility.convertHexToSignedFloat(parts[0]),
                 lng: Utility.convertHexToSignedFloat(parts[1]),
@@ -131,6 +129,7 @@ export class InventoryParser {
 
             keys.push(item)
         }
+
         return keys
     }
 }

@@ -33,6 +33,24 @@ export const Utility = {
         return `${Math.round(distance)} m`
     },
 
+    parseDistance: (distanceStr: string): number => {
+        const match = /^([\d.]+)\s*(\w+)$/.exec(distanceStr.trim())
+
+        if (!match) return 0
+
+        const value = parseFloat(match[1])
+        const unit = match[2].toLowerCase()
+
+        switch (unit) {
+            case 'm':
+                return value
+            case 'km':
+                return value * 1000
+            default:
+                return value
+        }
+    },
+
     /**
      * by EisFrei ?
      */
@@ -71,5 +89,7 @@ export const Utility = {
                     return orderPart2.indexOf(partA2) - orderPart2.indexOf(partB2)
                 }
             )
-        )
+        ),
+
+    fromE6: (value: number): number => value / 1_000_000
 }
