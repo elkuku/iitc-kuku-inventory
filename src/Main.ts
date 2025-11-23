@@ -1,8 +1,9 @@
 import * as Plugin from "iitcpluginkit"
 
 import {DialogHelper} from './DialogHelper'
-import {LayerHelper} from './LayerHelper'
 import {InventoryHelper} from './InventoryHelper'
+import {LayerHelper} from './LayerHelper'
+import {SidebarHelper} from './SidebarHelper'
 import Portal = IITC.Portal;
 
 const PLUGIN_NAME = 'KuKuInventory'
@@ -12,6 +13,7 @@ class KuKuInventory implements Plugin.Class {
     private dialogHelper: DialogHelper
     private dialog: JQuery | undefined
     private layerHelper: LayerHelper
+    private sidebarHelper: SidebarHelper
 
     init() {
         console.log(`${PLUGIN_NAME} ${VERSION}`)
@@ -23,16 +25,19 @@ class KuKuInventory implements Plugin.Class {
 
         this.dialogHelper = new DialogHelper(PLUGIN_NAME, 'Inventory', inventoryHelper)
         this.layerHelper = new LayerHelper('Portal keys KUKU')
+        this.sidebarHelper = new SidebarHelper()
 
         setTimeout(async () => {
             const keys = await inventoryHelper.getKeysInfo()
             this.layerHelper.addKeys(keys)
+            this.sidebarHelper.addKeys(keys)
         }, 1000) // delay setup and thus requesting data, or we might encounter a server error
 
         this.createButtons()
 
         window.addHook('portalAdded', this.onPortalAdded)
         window.addHook('portalSelected', this.onPortalSelected)
+        window.addHook('portalDetailsUpdated', this.onPortalDetailsUpdated)
     }
 
     public showPanel(name: string) {
@@ -56,6 +61,10 @@ class KuKuInventory implements Plugin.Class {
 
     private onPortalSelected(data: any) {
         main.layerHelper.onPortalSelected(data)
+    }
+
+    private onPortalDetailsUpdated(data: any) {
+        main.sidebarHelper.onPortalDetailsUpdated(data)
     }
 
     private createButtons(): void {

@@ -7,18 +7,14 @@ export class LayerHelper {
     private keys: Map<string, KeyInfo>
     private markers: Map<string, L.Marker>
 
-    private localStorageHelper: LocalStorageHelper
     private readonly capsuleNames: Map<string, string>
 
     constructor(name: string) {
         this.layerGroup = new L.LayerGroup()
         this.markers = new Map<string, L.Marker>()
+        this.capsuleNames = new LocalStorageHelper().loadMap('capsuleNames') ?? new Map()
 
         window.addLayerGroup(name, this.layerGroup, true)
-
-        this.localStorageHelper = new LocalStorageHelper()
-
-        this.capsuleNames = this.localStorageHelper.loadMap('capsuleNames') ?? new Map()
     }
 
     public addKeys(keys: Map<string, KeyInfo>) {
@@ -26,16 +22,22 @@ export class LayerHelper {
     }
 
     public addPortal(portal: Portal) {
-        if (!this.keys.has(portal.options.guid)) return
-        if (this.markers.has(portal.options.guid)) return
+        const guid = portal.options.guid
+        if (!this.keys.has(guid)) return
+        if (this.markers.has(guid)) return
 
-        const marker = this.createMarker(portal.options.guid)
+        const marker = this.createMarker(guid)
 
         this.layerGroup.addLayer(marker)
-        this.markers.set(portal.options.guid, marker)
+        this.markers.set(guid, marker)
     }
 
-    public toggleDetails(guid: string, showDetails: boolean) {
+    public onPortalSelected(data: any) {
+        if (data.unselectedPortalGuid) this.toggleDetails(data.unselectedPortalGuid as string, false)
+        if (data.selectedPortalGuid) this.toggleDetails(data.selectedPortalGuid as string, true)
+    }
+
+    private toggleDetails(guid: string, showDetails: boolean) {
         if (!this.markers.has(guid)) return
 
         this.layerGroup.removeLayer(this.markers.get(guid))
@@ -47,22 +49,9 @@ export class LayerHelper {
         this.markers.set(guid, newMarker)
     }
 
-    public onPortalSelected(data: any) {
-        if (data.unselectedPortalGuid) {
-            this.toggleDetails(data.unselectedPortalGuid as string, false)
-        }
-
-        if (data.selectedPortalGuid) {
-            this.toggleDetails(data.selectedPortalGuid as string, true)
-        }
-    }
-
     private createMarker(guid: string, withDetails: boolean = false): L.Marker {
         const keyInfo = this.keys.get(guid)
-
-        if (!keyInfo) {
-            throw new Error('keyInfo not found')
-        }
+        if (!keyInfo) throw new Error('keyInfo not found')
 
         let html = `${keyInfo.total}`
 

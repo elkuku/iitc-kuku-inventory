@@ -106,11 +106,7 @@ export class InventoryHelper {
 
     /**
      * @return
-     * [
-     *  {
-     *     {WEAPON-TYPE}-{LEVEL}: {COUNT}
-     *  }
-     * ]
+     * [{WEAPON-TYPE}-{LEVEL}: {COUNT}]
      */
     public async getWeaponsInfo(): Promise<Map<string, number>> {
         const inventory = await this.getInventory()
@@ -142,11 +138,7 @@ export class InventoryHelper {
 
     /**
      * @return
-     * [
-     *  {
-     *     RESONATOR-{LEVEL}: {COUNT}
-     *  }
-     * ]
+     * [{ RESONATOR-{LEVEL}: {COUNT} }]
      */
     public async getResonatorsInfo(): Promise<Map<string, number>> {
         const inventory = await this.getInventory()
@@ -175,7 +167,6 @@ export class InventoryHelper {
         return resonatorsInfo
     }
 
-
     public async getModsInfo() {
         const inventory = await this.getInventory()
         const info = new Map<string, number>()
@@ -191,7 +182,6 @@ export class InventoryHelper {
 
         return info
     }
-
 
     public async getBoostsInfo() {
         const inventory = await this.getInventory()
