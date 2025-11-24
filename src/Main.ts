@@ -27,11 +27,14 @@ class KuKuInventory implements Plugin.Class {
         this.layerHelper = new LayerHelper('Portal keys KUKU')
         this.sidebarHelper = new SidebarHelper()
 
-        setTimeout(async () => {
-            const keys = await inventoryHelper.getKeysInfo()
-            this.layerHelper.addKeys(keys)
-            this.sidebarHelper.addKeys(keys)
-        }, 1000) // delay setup and thus requesting data, or we might encounter a server error
+        setTimeout( // delay setup and thus requesting data, or we might encounter a server error.
+            async () => {
+                const keys = await inventoryHelper.getKeysInfo()
+                this.layerHelper.setKeys(keys)
+                this.sidebarHelper.setKeys(keys)
+            },
+            1000
+        )
 
         this.createButtons()
 

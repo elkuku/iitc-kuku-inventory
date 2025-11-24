@@ -10,20 +10,17 @@ export class SidebarHelper {
         this.capsuleNames = new LocalStorageHelper().loadMap('capsuleNames') ?? new Map()
     }
 
-    public addKeys(keys: Map<string, KeyInfo>) {
+    public setKeys(keys: Map<string, KeyInfo>) {
         this.keys = keys
     }
 
     public onPortalDetailsUpdated(data: any) {
-        console.log('onPortalDetailsUpdated', data)
         if (data.guid) this.updateKeyDetails(data.guid as string)
     }
 
-    public updateKeyDetails(guid: string) {
-        if (!this.keys.has(guid)) return
-
+    private updateKeyDetails(guid: string) {
         const keyInfo = this.keys.get(guid)
-        if (!keyInfo) throw new Error('keyInfo not found')
+        if (!keyInfo) return
 
         const tbody = document.querySelector('#randdetails tbody')
         if (!tbody) return
@@ -33,16 +30,15 @@ export class SidebarHelper {
         html += keyInfo.atHand && keyInfo.atHand !== keyInfo.total
             ? `<td>Hand: ${keyInfo.atHand}</td>`
             : '<td></td>'
+        html += '<td colspan="2">'
 
         if (keyInfo.capsules) {
-            html += '<td colspan="2">'
             for (const [capsule, v] of keyInfo.capsules) {
                 html += `${this.getCapsuleName(capsule)}: ${v}<br />`
             }
-            html += '</td>'
-        } else {
-            html += '<td colspan="2"></td>'
         }
+
+        html += '</td>'
         html += '</tr>'
 
         tbody.insertAdjacentHTML('beforeend', html)

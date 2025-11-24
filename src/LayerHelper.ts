@@ -17,7 +17,7 @@ export class LayerHelper {
         window.addLayerGroup(name, this.layerGroup, true)
     }
 
-    public addKeys(keys: Map<string, KeyInfo>) {
+    public setKeys(keys: Map<string, KeyInfo>) {
         this.keys = keys
     }
 
