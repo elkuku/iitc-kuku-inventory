@@ -6,7 +6,6 @@ export class LayerHelper {
     private readonly layerGroup: L.LayerGroup<any>
     private keys: Map<string, KeyInfo>
     private markers: Map<string, L.Marker>
-
     private readonly capsuleNames: Map<string, string>
 
     constructor(name: string) {
@@ -21,7 +20,7 @@ export class LayerHelper {
         this.keys = keys
     }
 
-    public addPortal(portal: Portal) {
+    public onPortalAdded(portal: Portal) {
         const guid = portal.options.guid
         if (!this.keys.has(guid)) return
         if (this.markers.has(guid)) return
@@ -32,9 +31,21 @@ export class LayerHelper {
         this.markers.set(guid, marker)
     }
 
+    public onPortalRemoved(portal: Portal) {
+        const guid = portal.options.guid
+        if (!this.markers.has(guid)) return
+
+        this.layerGroup.removeLayer(this.markers.get(guid))
+        this.markers.delete(guid)
+    }
+
     public onPortalSelected(data: any) {
         if (data.unselectedPortalGuid) this.toggleDetails(data.unselectedPortalGuid as string, false)
         if (data.selectedPortalGuid) this.toggleDetails(data.selectedPortalGuid as string, true)
+    }
+
+    private getCapsuleName(key: string): string {
+        return this.capsuleNames.get(key) ?? key
     }
 
     private toggleDetails(guid: string, showDetails: boolean) {
@@ -56,11 +67,11 @@ export class LayerHelper {
         let html = `${keyInfo.total}`
 
         if (withDetails) {
-            if (keyInfo.atHand) html += `<br><strong>Hand: ${keyInfo.atHand}</strong>`
+            if (keyInfo.atHand) html += `<br /><strong>Hand: ${keyInfo.atHand}</strong>`
 
             if (keyInfo.capsules) {
-                for (const [capsule, v] of keyInfo.capsules) {
-                    html += `<br>${this.getCapsuleName(capsule)}: ${v}`
+                for (const [capsule, count] of keyInfo.capsules) {
+                    html += `<br />${this.getCapsuleName(capsule)}: ${count}`
                 }
             }
         }
@@ -75,9 +86,5 @@ export class LayerHelper {
                 interactive: false,
             }
         )
-    }
-
-    private getCapsuleName(key: string): string {
-        return this.capsuleNames.get(key) ?? key
     }
 }

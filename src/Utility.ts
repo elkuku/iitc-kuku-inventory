@@ -19,7 +19,7 @@ export const Utility = {
     /**
      * by EisFrei ?
      */
-    distance: (latLng: L.LatLng) => {
+    distanceToCenter: (latLng: L.LatLng) => {
         const center = window.map.getCenter()
 
         const distance = latLng.distanceTo(center)

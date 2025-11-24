@@ -39,6 +39,7 @@ class KuKuInventory implements Plugin.Class {
         this.createButtons()
 
         window.addHook('portalAdded', this.onPortalAdded)
+        window.addHook('portalRemoved', this.onPortalRemoved)
         window.addHook('portalSelected', this.onPortalSelected)
         window.addHook('portalDetailsUpdated', this.onPortalDetailsUpdated)
     }
@@ -58,8 +59,11 @@ class KuKuInventory implements Plugin.Class {
     }
 
     private onPortalAdded(data: any) {
-        const portal: Portal = data.portal
-        main.layerHelper.addPortal(portal)
+        main.layerHelper.onPortalAdded(data.portal as Portal)
+    }
+
+    private onPortalRemoved(data: any) {
+        main.layerHelper.onPortalRemoved(data.portal as Portal)
     }
 
     private onPortalSelected(data: any) {
@@ -71,22 +75,21 @@ class KuKuInventory implements Plugin.Class {
     }
 
     private createButtons(): void {
-        $('#toolbox').append(
-            $('<a>', {
-                text: 'KInventory',
-                click: () => this.showDialog()
-            })
-        )
+        IITC.toolbox.addButton({
+            label: 'KInventory',
+            action: this.showDialog,
+            title: 'Show the agents inventory',
+        })
     }
 
     private async showDialog(): Promise<void> {
-        if (!this.dialog) {
-            this.dialog = this.dialogHelper.getDialog()
-            this.dialog.on('dialogclose', () => {
-                this.dialog = undefined
+        if (!main.dialog) {
+            main.dialog = main.dialogHelper.getDialog()
+            main.dialog.on('dialogclose', () => {
+                main.dialog = undefined
             })
 
-            await this.dialogHelper.updateDialog()
+            await main.dialogHelper.updateDialog()
         }
     }
 }

@@ -57,8 +57,8 @@ export class DialogHelper {
             translateKey: (key: string): string => {
                 return translateKey(key)
             },
-            distance: (lat: number, lng: number): string => {
-                return Utility.distance(L.latLng(lat, lng))
+            distanceToCenter: (lat: number, lng: number): string => {
+                return Utility.distanceToCenter(L.latLng(lat, lng))
             },
             dump: (context: any): void => {
                 console.log(context)
@@ -82,7 +82,7 @@ export class DialogHelper {
             title: this.title,
             html: template(data),
             width: 800,
-            height: 600,
+            height: 700,
             buttons: [],
         }).parent()
     }
