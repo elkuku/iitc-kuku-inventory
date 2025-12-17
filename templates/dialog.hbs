@@ -21,6 +21,8 @@
         </button>
     </div>
 
+    <hr>
+
     <div id="{{prefix}}-Inventory-Panel" style="display: block;">
         <table class="inventoryTable">
             <thead>
@@ -40,7 +42,6 @@
                 <th>Hack <span class="cnt" id="{{prefix}}-cntModHack"></span></th>
                 <th>Other <span class="cnt" id="{{prefix}}-cntModOther"></span></th>
             </tr>
-
             </thead>
             <tbody>
             <tr>
@@ -57,6 +58,7 @@
             </tbody>
         </table>
     </div>
+
     <div id="{{prefix}}-Keys-Panel" style="display: none;">
         <table class="inventoryTable" id="keysTable">
             <thead>
@@ -71,6 +73,7 @@
             <tbody id="{{prefix}}-Keys-Container"></tbody>
         </table>
     </div>
+
     <div id="{{prefix}}-Other-Panel" style="display: none;">
         <table class="inventoryTable">
             <thead>
@@ -93,19 +96,9 @@
             </tbody>
         </table>
     </div>
-    <div id="{{prefix}}-Info-Panel" style="display: none;">
-        <h2>{{product.name}} {{product.version}}</h2>
-        <ul>
-            <li>
-                GitHub:
-                <a href="https://github.com/elkuku/iitc-kuku-inventory" target="_blank">
-                    elkuku/iitc-kuku-inventory
-                </a>
-            </li>
-        </ul>
-    </div>
+
     <div id="{{prefix}}-Capsules-Panel" style="display: none;">
-        Key Capsules
+        <h3>Edit Key Capsule Names</h3>
         <table>
             <thead>
             <tr>
@@ -117,5 +110,22 @@
         </table>
         <button onclick="{{plugin}}.storeCapsuleNames()">Save</button>
     </div>
-</div>
+
+    <div id="{{prefix}}-Info-Panel" style="display: none;">
+        <h3>{{product.name}} {{product.version}}</h3>
+        <hr>
+        <ul>
+            <li>
+                Code and Issues:
+                <a href="https://github.com/elkuku/iitc-kuku-inventory" target="_blank">elkuku/iitc-kuku-inventory</a>
+            </li>
+            <li>
+                Questions:
+                <a href="https://t.me/nikp3h" target="_blank">Telegram: nikp3h</a>
+            </li>
+        </ul>
+    </div>
+
+</div> <!-- container -->
+
 
