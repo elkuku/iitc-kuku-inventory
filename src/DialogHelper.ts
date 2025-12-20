@@ -14,36 +14,35 @@ import {translateKey} from '../types/key-translations'
 import {InventoryHelper} from './InventoryHelper'
 import {HelperHandlebars, Inventory, KeyInfo} from '../types/Types'
 import {Utility} from './Utility'
-import {LocalStorageHelper} from './LocalStorageHelper'
+import {CapsuleNamesMap} from './StorageHelper'
 
 export class DialogHelper {
 
-    private localStorageHelper: LocalStorageHelper
-    private readonly capsuleNames: Map<string, string>
     private handlebars: HelperHandlebars
+    private capsuleNames: CapsuleNamesMap = {}
 
     public constructor(
         private pluginName: string,
         private title: string,
-        private inventoryHelper: InventoryHelper
-    ) {
-        this.inventoryHelper = inventoryHelper
-        this.localStorageHelper = new LocalStorageHelper()
+        private inventoryHelper: InventoryHelper,
+    ) {}
 
-        this.capsuleNames = this.localStorageHelper.loadMap('capsuleNames') ?? new Map()
+    public setCapsuleNames(capsuleNames: CapsuleNamesMap) {
+        this.capsuleNames = capsuleNames
     }
 
     public getDialog(): JQuery {
         this.handlebars = window.plugin.HelperHandlebars
 
         if (!this.handlebars) {
-            throw new Error('Handlebars helper not found')
+            alert(`${this.pluginName} - Handlebars helper not found`)
+            throw new Error(`${this.pluginName} - Handlebars helper not found`)
         }
 
         // @ts-expect-error 'howtodeclaretypes?'
         this.handlebars.registerHelper({
             capsuleNames: (key: string): string => {
-                return this.capsuleNames.get(key) ?? key
+                return this.capsuleNames[key] ?? key
             },
             eachInMap: (map: Map<any, any>, block: Handlebars.HelperOptions) => {
                 let out = ''
@@ -197,20 +196,6 @@ export class DialogHelper {
                 })
             }
         })
-    }
-
-    public storeCapsuleNames() {
-        const capsuleNames = this.getCapsuleNames()
-
-        for (const [key, value] of capsuleNames) {
-            if (value) {
-                this.capsuleNames.set(key, value)
-            }
-        }
-
-        this.localStorageHelper.saveMap('capsuleNames', this.capsuleNames)
-
-        alert('Capsule names have been saved - please refresh ;)')
     }
 
     private processResos(resonators: Map<string, number>) {
@@ -396,16 +381,16 @@ export class DialogHelper {
         this.getContainer('KeyCapsules').innerHTML =
             this.handlebars.compile(keyCapsulesTemplate)({
                 keyCapsules: keyCapsules,
-                names: Object.fromEntries(this.capsuleNames)
+                names: this.capsuleNames
             })
     }
 
-    private getCapsuleNames(): Map<string, string> {
-        const names = new Map<string, string>()
+    public getCapsuleNames(): Record<string, string> {
+        const names: Record<string, string> = {}
         const inputElements = this.getContainer('KeyCapsules').querySelectorAll('input')
 
         inputElements.forEach(input => {
-            names.set(input.name, input.value)
+            names[input.name] = input.value
         })
 
         return names

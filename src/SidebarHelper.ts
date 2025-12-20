@@ -1,17 +1,17 @@
 import {KeyInfo} from '../types/Types'
-import {LocalStorageHelper} from './LocalStorageHelper'
+import {CapsuleNamesMap} from './StorageHelper'
 
 export class SidebarHelper {
 
     private keys: Map<string, KeyInfo>
-    private readonly capsuleNames: Map<string, string>
-
-    constructor() {
-        this.capsuleNames = new LocalStorageHelper().loadMap('capsuleNames') ?? new Map()
-    }
+    private capsuleNames: CapsuleNamesMap = {}
 
     public setKeys(keys: Map<string, KeyInfo>) {
         this.keys = keys
+    }
+
+    public setCapsuleNames(capsuleNames: CapsuleNamesMap) {
+        this.capsuleNames = capsuleNames
     }
 
     public onPortalDetailsUpdated(data: any) {
@@ -45,6 +45,6 @@ export class SidebarHelper {
     }
 
     private getCapsuleName(key: string): string {
-        return this.capsuleNames.get(key) ?? key
+        return this.capsuleNames[key] ?? key
     }
 }

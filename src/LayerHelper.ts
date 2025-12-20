@@ -1,23 +1,26 @@
 import {KeyInfo} from '../types/Types'
-import {LocalStorageHelper} from './LocalStorageHelper'
 import Portal = IITC.Portal;
+import {CapsuleNamesMap} from './StorageHelper'
 
 export class LayerHelper {
     private readonly layerGroup: L.LayerGroup<any>
     private keys: Map<string, KeyInfo>
     private markers: Map<string, L.Marker>
-    private readonly capsuleNames: Map<string, string>
+    private capsuleNames: CapsuleNamesMap = {}
 
     constructor(name: string) {
         this.layerGroup = new L.LayerGroup()
         this.markers = new Map<string, L.Marker>()
-        this.capsuleNames = new LocalStorageHelper().loadMap('capsuleNames') ?? new Map()
 
         window.addLayerGroup(name, this.layerGroup, true)
     }
 
     public setKeys(keys: Map<string, KeyInfo>) {
         this.keys = keys
+    }
+
+    public setCapsuleNames(capsuleNames: CapsuleNamesMap) {
+        this.capsuleNames = capsuleNames
     }
 
     public onPortalAdded(portal: Portal) {
@@ -44,10 +47,6 @@ export class LayerHelper {
         if (data.selectedPortalGuid) this.toggleDetails(data.selectedPortalGuid as string, true)
     }
 
-    private getCapsuleName(key: string): string {
-        return this.capsuleNames.get(key) ?? key
-    }
-
     private toggleDetails(guid: string, showDetails: boolean) {
         if (!this.markers.has(guid)) return
 
@@ -70,8 +69,9 @@ export class LayerHelper {
             if (keyInfo.atHand) html += `<br /><strong>Hand: ${keyInfo.atHand}</strong>`
 
             if (keyInfo.capsules) {
-                for (const [capsule, count] of keyInfo.capsules) {
-                    html += `<br />${this.getCapsuleName(capsule)}: ${count}`
+                for (const [key, count] of keyInfo.capsules) {
+                    const capsuleName = this.capsuleNames[key] ?? key
+                    html += `<br />${capsuleName}: ${count}`
                 }
             }
         }

@@ -1,14 +1,39 @@
-const KEY_STORAGE = 'plugin-kuku-inventory'
+const PREFIX = 'plugin-kuku-inventory'
 
-export class LocalStorageHelper {
+export class LocalStorageHelper<T> {
 
-    public saveMap<T, U>(key: string, map: Map<T, U>): void {
-        const object = Object.fromEntries(map)
-        localStorage.setItem(KEY_STORAGE + '-' + key, JSON.stringify(object))
+    constructor(
+        private readonly key: string,
+        private readonly defaultValue: T
+    ) {}
+
+    load(): T {
+        const raw = localStorage.getItem(`${PREFIX}-${this.key}`)
+        if (!raw) return structuredClone(this.defaultValue)
+
+        try {
+            return JSON.parse(raw) as T
+        } catch {
+            console.warn(`[LocalStore] Failed to parse ${this.key}, resetting`)
+            return structuredClone(this.defaultValue)
+        }
     }
 
-    public loadMap<T extends string, U>(key: string): Map<T, U> | undefined {
-        const json = localStorage.getItem(KEY_STORAGE + '-' + key)
+    save(value: T): void {
+        localStorage.setItem(`${PREFIX}-${this.key}`, JSON.stringify(value))
+    }
+
+    clear(): void {
+        localStorage.removeItem(this.key)
+    }
+
+    public saveMap<T, U>(map: Map<T, U>): void {
+        const object = Object.fromEntries(map)
+        localStorage.setItem(PREFIX + '-' + this.key, JSON.stringify(object))
+    }
+
+    public loadMap<T extends string, U>(): Map<T, U> | undefined {
+        const json = localStorage.getItem(PREFIX + '-' + this.key)
         if (!json) return undefined
 
         const object = JSON.parse(json) as Record<T, U>

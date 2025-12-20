@@ -4,6 +4,7 @@ import {DialogHelper} from './DialogHelper'
 import {InventoryHelper} from './InventoryHelper'
 import {LayerHelper} from './LayerHelper'
 import {SidebarHelper} from './SidebarHelper'
+import {CapsuleNamesMap, StorageHelper} from './StorageHelper'
 import Portal = IITC.Portal;
 
 const PLUGIN_NAME = 'KuKuInventory'
@@ -13,7 +14,11 @@ class KuKuInventory implements Plugin.Class {
     private dialogHelper: DialogHelper
     private dialog: JQuery | undefined
     private layerHelper: LayerHelper
-    private sidebarHelper: SidebarHelper
+    private sidebarHelper = new SidebarHelper()
+    private syncHelper: StorageHelper
+
+    // Synced with the sync plugin
+    public capsuleNames: CapsuleNamesMap = {}
 
     init() {
         console.log(`${PLUGIN_NAME} ${VERSION}`)
@@ -24,8 +29,11 @@ class KuKuInventory implements Plugin.Class {
         const inventoryHelper = new InventoryHelper()
 
         this.dialogHelper = new DialogHelper(PLUGIN_NAME, 'Inventory', inventoryHelper)
-        this.layerHelper = new LayerHelper('Portal keys KUKU')
-        this.sidebarHelper = new SidebarHelper()
+        this.syncHelper = new StorageHelper(PLUGIN_NAME, this.updateCallback)
+        this.layerHelper = new LayerHelper('Portal keys')
+
+        this.capsuleNames = this.syncHelper.capsuleNames
+        this.setCapsuleNames()
 
         setTimeout( // delay setup and thus requesting data, or we might encounter a server error.
             async () => {
@@ -37,11 +45,9 @@ class KuKuInventory implements Plugin.Class {
         )
 
         this.createButtons()
+        this.addHooks()
 
-        window.addHook('portalAdded', this.onPortalAdded)
-        window.addHook('portalRemoved', this.onPortalRemoved)
-        window.addHook('portalSelected', this.onPortalSelected)
-        window.addHook('portalDetailsUpdated', this.onPortalDetailsUpdated)
+        this.syncHelper.register()
     }
 
     public showPanel(name: string) {
@@ -52,26 +58,67 @@ class KuKuInventory implements Plugin.Class {
         await this.dialogHelper.refresh()
     }
 
-    public storeCapsuleNames() {
-        this.dialogHelper.storeCapsuleNames()
+    public async storeCapsuleNames() {
+        const capsuleNames = this.dialogHelper.getCapsuleNames()
 
-        // todo: reload
+        this.syncHelper.capsuleNames = capsuleNames
+        this.capsuleNames = capsuleNames
+
+        this.syncHelper.updateCapsuleNames(Object.keys(capsuleNames))
+        this.syncHelper.persistField('capsuleNames')
+
+        this.setCapsuleNames()
+
+        await this.dialogHelper.updateDialog()
+
+        alert('Capsule names have been saved. :)')
     }
 
-    private onPortalAdded(data: any) {
-        main.layerHelper.onPortalAdded(data.portal as Portal)
+    private updateCallback = async (fieldName: string): Promise<void> => {
+        console.log(`[${PLUGIN_NAME}] - UPDATING: ${fieldName}`)
+
+        switch (fieldName) {
+            case 'settings':
+                break
+            case 'capsuleNames':
+                this.setCapsuleNames()
+                await this.dialogHelper.updateDialog()
+
+                this.syncHelper.capsuleNames = this.capsuleNames
+                this.syncHelper.persistField('capsuleNames')
+                break
+            default:
+                console.error(`Unknown field ${fieldName}`)
+        }
     }
 
-    private onPortalRemoved(data: any) {
-        main.layerHelper.onPortalRemoved(data.portal as Portal)
+    private setCapsuleNames() {
+        this.layerHelper.setCapsuleNames(this.capsuleNames)
+        this.sidebarHelper.setCapsuleNames(this.capsuleNames)
+        this.dialogHelper.setCapsuleNames(this.capsuleNames)
     }
 
-    private onPortalSelected(data: any) {
-        main.layerHelper.onPortalSelected(data)
+    private onPortalAdded = (data: any) => {
+        this.layerHelper.onPortalAdded(data.portal as Portal)
     }
 
-    private onPortalDetailsUpdated(data: any) {
-        main.sidebarHelper.onPortalDetailsUpdated(data)
+    private onPortalRemoved = (data: any) => {
+        this.layerHelper.onPortalRemoved(data.portal as Portal)
+    }
+
+    private onPortalSelected = (data: any) => {
+        this.layerHelper.onPortalSelected(data)
+    }
+
+    private onPortalDetailsUpdated = (data: any) => {
+        this.sidebarHelper.onPortalDetailsUpdated(data)
+    }
+
+    private addHooks() {
+        window.addHook('portalAdded', this.onPortalAdded)
+        window.addHook('portalRemoved', this.onPortalRemoved)
+        window.addHook('portalSelected', this.onPortalSelected)
+        window.addHook('portalDetailsUpdated', this.onPortalDetailsUpdated)
     }
 
     private createButtons(): void {
@@ -82,18 +129,16 @@ class KuKuInventory implements Plugin.Class {
         })
     }
 
-    private async showDialog(): Promise<void> {
-        if (!main.dialog) {
-            main.dialog = main.dialogHelper.getDialog()
-            main.dialog.on('dialogclose', () => {
-                main.dialog = undefined
+    private showDialog = async (): Promise<void> => {
+        if (!this.dialog) {
+            this.dialog = this.dialogHelper.getDialog()
+            this.dialog.on('dialogclose', () => {
+                this.dialog = undefined
             })
 
-            await main.dialogHelper.updateDialog()
+            await this.dialogHelper.updateDialog()
         }
     }
 }
 
-export const main = new KuKuInventory()
-
-Plugin.Register(main, PLUGIN_NAME)
+Plugin.Register(new KuKuInventory(), PLUGIN_NAME)

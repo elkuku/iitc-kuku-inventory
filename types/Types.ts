@@ -52,9 +52,9 @@ export namespace Inventory {
 }
 
 export interface KeyInfo {
+    portal: Portal
     total: number
     atHand?: number
-    portal: Portal
     capsules?: Map<string, number>
 }
 
