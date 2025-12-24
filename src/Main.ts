@@ -14,8 +14,8 @@ class KuKuInventory implements Plugin.Class {
     private dialogHelper: DialogHelper
     private dialog: JQuery | undefined
     private layerHelper: LayerHelper
-    private sidebarHelper = new SidebarHelper()
-    private syncHelper: StorageHelper
+    private sidebarHelper: SidebarHelper
+    private storageHelper: StorageHelper
 
     // Synced with the sync plugin
     public capsuleNames: CapsuleNamesMap = {}
@@ -29,10 +29,11 @@ class KuKuInventory implements Plugin.Class {
         const inventoryHelper = new InventoryHelper()
 
         this.dialogHelper = new DialogHelper(PLUGIN_NAME, 'Inventory', inventoryHelper)
-        this.syncHelper = new StorageHelper(PLUGIN_NAME, this.updateCallback)
+        this.storageHelper = new StorageHelper(PLUGIN_NAME, this.updateCallback)
         this.layerHelper = new LayerHelper('Portal keys')
+        this.sidebarHelper = new SidebarHelper()
 
-        this.capsuleNames = this.syncHelper.capsuleNames
+        this.capsuleNames = this.storageHelper.capsuleNames
         this.setCapsuleNames()
 
         setTimeout( // delay setup and thus requesting data, or we might encounter a server error.
@@ -47,7 +48,7 @@ class KuKuInventory implements Plugin.Class {
         this.createButtons()
         this.addHooks()
 
-        this.syncHelper.register()
+        this.storageHelper.register()
     }
 
     public showPanel(name: string) {
@@ -61,11 +62,11 @@ class KuKuInventory implements Plugin.Class {
     public async storeCapsuleNames() {
         const capsuleNames = this.dialogHelper.getCapsuleNames()
 
-        this.syncHelper.capsuleNames = capsuleNames
+        this.storageHelper.capsuleNames = capsuleNames
         this.capsuleNames = capsuleNames
 
-        this.syncHelper.updateCapsuleNames(Object.keys(capsuleNames))
-        this.syncHelper.persistField('capsuleNames')
+        this.storageHelper.updateCapsuleNames(Object.keys(capsuleNames))
+        this.storageHelper.persistField('capsuleNames')
 
         this.setCapsuleNames()
 
@@ -84,8 +85,8 @@ class KuKuInventory implements Plugin.Class {
                 this.setCapsuleNames()
                 await this.dialogHelper.updateDialog()
 
-                this.syncHelper.capsuleNames = this.capsuleNames
-                this.syncHelper.persistField('capsuleNames')
+                this.storageHelper.capsuleNames = this.capsuleNames
+                this.storageHelper.persistField('capsuleNames')
                 break
             default:
                 console.error(`Unknown field ${fieldName}`)

@@ -1,8 +1,7 @@
 <div id="{{prefix}}Container">
 
     <div class="sideButtons">
-        <button onclick="{{plugin}}.showPanel('Info')">Info</button>
-        <button onclick="{{plugin}}.refresh()">Refresh</button>
+        <button onclick="{{plugin}}.showPanel('Info')">Settings</button>
     </div>
 
     <div>
@@ -113,6 +112,11 @@
 
     <div id="{{prefix}}-Info-Panel" style="display: none;">
         <h3>{{product.name}} {{product.version}}</h3>
+        <hr>
+        <!--
+        <button>Export</button>
+        -->
+        <button onclick="{{plugin}}.refresh()">Refresh</button>
         <hr>
         <ul>
             <li>

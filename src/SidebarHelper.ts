@@ -15,11 +15,9 @@ export class SidebarHelper {
     }
 
     public onPortalDetailsUpdated(data: any) {
-        if (data.guid) this.updateKeyDetails(data.guid as string)
-    }
+        if (!data.guid) return
 
-    private updateKeyDetails(guid: string) {
-        const keyInfo = this.keys.get(guid)
+        const keyInfo = this.keys.get(data.guid as string)
         if (!keyInfo) return
 
         const tbody = document.querySelector('#randdetails tbody')
@@ -33,8 +31,9 @@ export class SidebarHelper {
         html += '<td colspan="2">'
 
         if (keyInfo.capsules) {
-            for (const [capsule, v] of keyInfo.capsules) {
-                html += `${this.getCapsuleName(capsule)}: ${v}<br />`
+            for (const [key, count] of keyInfo.capsules) {
+                const capsuleName = this.capsuleNames[key] ?? key
+                html += `${capsuleName}: ${count}<br />`
             }
         }
 
@@ -42,9 +41,5 @@ export class SidebarHelper {
         html += '</tr>'
 
         tbody.insertAdjacentHTML('beforeend', html)
-    }
-
-    private getCapsuleName(key: string): string {
-        return this.capsuleNames[key] ?? key
     }
 }
