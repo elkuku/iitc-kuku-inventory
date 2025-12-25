@@ -3,7 +3,7 @@
   "id": "iitc_plugin_KuKuInventory",
   "category": "Misc",
   "description": "Display inventory information",
-  "author": "nikp3h",
+  "author": "elkuku",
   "entry": "src/Main.ts",
   "minimize": false,
   "downloadURL": "https://elkuku.github.io/iitc-kuku-inventory/files"
