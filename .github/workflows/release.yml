@@ -40,7 +40,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup GitHub page
-        run: node bin/setup-github-page.js
+        run: node .github/scripts/setup-github-page.js
 
       - name: Upload build artifact to pages
         uses: actions/upload-pages-artifact@v3

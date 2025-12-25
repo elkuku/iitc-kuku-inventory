@@ -17,23 +17,20 @@ jobs:
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x' # Or your required Node.js version
-          cache: 'yarn' # Enables caching for Yarn dependencies
-
-      # Optional: Enable Corepack if using Yarn 2+ (Yarn Berry)
-      # - name: Enable Corepack
-      #   run: corepack enable
+          node-version: 20
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: yarn install --immutable --frozen-lockfile # Use these flags for CI if you use Yarn 2+ and have a lockfile
-        # For Yarn 1.x, a simple 'yarn install' is often sufficient
+        run: yarn install --immutable --frozen-lockfile
 
       - name: Run build dev
-        run: yarn build
+        run: yarn build:dev
 
-      # Optional: Upload the build artifact
+      - name: Run build prod
+        run: yarn build:prod
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: dist # Replace 'dist' with your project's actual build output path
+          path: dist
