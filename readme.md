@@ -4,17 +4,23 @@ A plugin for [IITC](https://iitc.app) to display the agents inventory (CORE requ
 
 <img alt="Image" src="https://github.com/user-attachments/assets/aacbb924-fca8-4196-a3f9-e0b2507d999f" />
 
-If you wonder why this looks so gorgeous (and green)... it's because of the fact that I am using the awesome [Blur Theme](https://github.com/Falenone/Blurtheme)
+*If you wonder why this looks so gorgeous (and green)... try the awesome [Blur Theme](https://github.com/Falenone/Blurtheme)* :wink:
+
+## Highlights
+
+* Display the inventory in a "visual" way (see above)
+* Display key information on the map and in the sidebar
+* Synchronizes your custom key capsule names across devices using the sync plugin
 
 ## Installation
 
 First install the required helper plugin:
 
-* Template Helper: [iitc_plugin_helper_handlebars.user.js
-  ](https://github.com/elkuku/iitc-kuku-helper-handlebars/releases/latest)
+* [Template Helper](https://elkuku.github.io/iitc-kuku-helper-handlebars/files/iitc_plugin_helper_handlebars.user.js)
 
-Then visit the [release page](https://github.com/elkuku/iitc-kuku-inventory/releases/latest) and install the `user.js` file
+Then install the [Inventory plugin](https://elkuku.github.io/iitc-kuku-inventory/files/iitc_plugin_KuKuInventory.user.js).
 
+Be sure that all the plugins are activated in the plugin settings.
 
 ----
 
