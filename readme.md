@@ -9,8 +9,8 @@ A plugin for [IITC](https://iitc.app) to display the agents inventory (CORE requ
 ## Highlights
 
 * Display the inventory in a "visual" way (see above)
-* Display key information on the map and in the sidebar
-* Synchronizes your custom key capsule names across devices using the sync plugin
+* Show key information on the map and in the sidebar
+* Synchronize your custom key capsule names across devices using the sync plugin (if available)
 
 ## Installation
 
