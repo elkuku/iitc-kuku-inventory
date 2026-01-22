@@ -16,9 +16,11 @@ A plugin for [IITC](https://iitc.app) to display the agents inventory (CORE requ
 
 First install the required helper plugin:
 
-* [Template Helper](https://elkuku.github.io/iitc-kuku-helper-handlebars/files/iitc_plugin_helper_handlebars.user.js)
+* [Template Helper](https://elkuku.github.io/iitc-kuku-helper-handlebars/files/release/iitc_plugin_helper_handlebars.user.js)
 
-Then install the [Inventory plugin](https://elkuku.github.io/iitc-kuku-inventory/files/iitc_plugin_KuKuInventory.user.js).
+Then install the [Inventory plugin](https://elkuku.github.io/iitc-kuku-inventory/files/release/iitc_plugin_KuKuInventory.user.js).
+
+For more information visit: [elkuku.github.io/iitc-kuku-inventory/](https://elkuku.github.io/iitc-kuku-inventory/)
 
 Be sure that all the plugins are activated in the plugin settings.
 
