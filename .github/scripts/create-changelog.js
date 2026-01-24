@@ -10,7 +10,7 @@ function getTags() {
 
     const gitCommand = [
         'git for-each-ref refs/tags',
-        '--sort=-creatordate',
+        '--sort=-taggerdate',
         '--format="%(refname:strip=2)%00%(taggerdate:format:%Y-%b-%d)%00%(contents)%00"',
     ].join(' ')
 
@@ -26,19 +26,13 @@ function getTags() {
     const fields = output.trim().split('\0').filter(Boolean)
     const tags = []
 
-    console.log(fields)
-
     for (let i = 0; i < fields.length; i += 3) {
         const name = fields[i].trim()
         const date = fields[i + 1].trim()
         const message = fields[i + 2]?.trim() ?? ''
 
-        console.log(name, date, message)
-
         if (name) tags.push({name, date, message})
     }
-
-    console.log(tags)
 
     return tags
 }

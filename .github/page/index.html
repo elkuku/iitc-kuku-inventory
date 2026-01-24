@@ -14,14 +14,25 @@
 
     <h1>{{PROJECT_NAME}}</h1>
 
-    <img src="assets/img/screenshot-001.png" alt="Screenshot" />
-
     <p>
         <em>{{PROJECT_DESCRIPTION}}</em>
     </p>
 
+    <img class="img-fluid" width="600px" src="assets/img/screenshot-001.png" alt="Screenshot" />
+
+    <h2>Installation</h2>
+    <p>
+        First install the required helper plugin:
+        <a href="https://iitc.app/community_plugins#helper-handlebars-by-elkuku">Template Helper</a>
+    </p>
+
+    <p>
+        Then install the inventory plugin from here.
+    </p>
+
     <div class="release-container">
-        Latest Version: {{PROJECT_VERSION}}
+
+        Latest Version: <span class="badge text-bg-primary">{{PROJECT_VERSION}}</span> <span class="badge text-bg-secondary">{{RELEASE_DATE}}</span>
 
         <ul>
             {{RELEASE_LINKS}}

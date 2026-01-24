@@ -6,7 +6,7 @@ function escapeHtml(value = '') {
     return value
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+        .replace(/>/g, '&gt;')
 }
 
 console.log('Generating GitHub page...')
@@ -41,14 +41,6 @@ if (fs.existsSync('build/dev')) {
         .map(entry => entry.name)
 }
 
-const metaFile = releaseFiles.filter(fileName => fileName.endsWith('.meta.js'))[0]
-let version = 'n/a'
-if (metaFile) {
-    const meta = fs.readFileSync(`build/release/${metaFile}`, 'utf8')
-    const match = meta.match(/^\s*\/\/\s*@version\s+(.+)$/m)
-    version = match ? match[1].trim() : 'n/a'
-}
-
 const pluginData = JSON.parse(
     fs.readFileSync('plugin.json', 'utf8'),
 )
@@ -74,20 +66,37 @@ let template = fs.readFileSync('gh_page/index.html', 'utf8')
 const projectName = pluginData.name.replace('IITC plugin: ', '')
 
 const raw = fs.readFileSync('build/changelog.json', 'utf8')
-const tags = JSON.parse(raw);
+const tags = JSON.parse(raw)
+
 const changelog = tags.map(tag => `
       <tr>
-        <td class="changelog-version">${escapeHtml(tag.name)}</td>
-        <td class="changelog-date">${escapeHtml(tag.date)}</td>
+        <td class="badge text-bg-primary">${escapeHtml(tag.name)}</td>
+        <td class="badge text-bg-secondary">${escapeHtml(tag.date)}</td>
         <td><pre class="changelog">${escapeHtml(tag.message)}</pre></td>
       </tr>
   `).join('')
+
+let version = 'n/a', releaseDate = 'n/a'
+
+if (tags[0]) {
+    version = tags[0].name
+    releaseDate = tags[0].date
+} else {
+    const metaFile = releaseFiles.filter(fileName => fileName.endsWith('.meta.js'))[0]
+    if (metaFile) {
+        const meta = fs.readFileSync(`build/release/${metaFile}`, 'utf8')
+        const match = meta.match(/^\s*\/\/\s*@version\s+(.+)$/m)
+        version = match ? match[1].trim() : 'n/a'
+    }
+}
+
 
 template = template
     .replace('{{RELEASE_LINKS}}', releaseLinks)
     .replace('{{DEV_LINKS}}', devLinks)
     .replaceAll('{{PROJECT_NAME}}', projectName)
     .replaceAll('{{PROJECT_VERSION}}', version)
+    .replaceAll('{{RELEASE_DATE}}', releaseDate)
     .replaceAll('{{LAST_UPDATED}}', formattedDate)
     .replace('{{PROJECT_DESCRIPTION}}', pluginData.description)
     .replace('{{CHANGELOG}}', changelog)
