@@ -77,7 +77,8 @@ const raw = fs.readFileSync('build/changelog.json', 'utf8')
 const tags = JSON.parse(raw);
 const changelog = tags.map(tag => `
       <tr>
-        <td>${escapeHtml(tag.name)}</td>
+        <td class="changelog-version">${escapeHtml(tag.name)}</td>
+        <td class="changelog-date">${escapeHtml(tag.date)}</td>
         <td><pre class="changelog">${escapeHtml(tag.message)}</pre></td>
       </tr>
   `).join('')

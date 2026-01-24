@@ -21,10 +21,20 @@ div.release-container {
     margin-bottom: 10px;
 }
 
+table.changelog-table td {
+    padding: 5px;
+}
 table.changelog-table tr {
     vertical-align: top;
 }
 
 pre.changelog {
     color: lime;
+}
+
+td.changelog-version {
+    color: orange;
+}
+td.changelog-date {
+    color: wheat;
 }
