@@ -26,10 +26,6 @@ span.cnt, td.cnt {
     color: lime;
 }
 
-div.sideButtons {
-    float: right;
-}
-
 .layer-key-info {
     font-size: 11px;
     color: #ffff00;

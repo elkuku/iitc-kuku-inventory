@@ -1,140 +1,135 @@
 <div id="{{prefix}}Container">
 
-    <div class="sideButtons">
-        <button onclick="{{plugin}}.showPanel('Info')">Settings</button>
-    </div>
-
-    <div>
-        Total: <span class="cnt" id="{{prefix}}-cntTotal"></span>
-        <button onclick="{{plugin}}.showPanel('Inventory')">
-            Equipment <span class="cnt" id="{{prefix}}-cntEquipment"></span>
-        </button>
-        <button onclick="{{plugin}}.showPanel('Keys')">
-            Keys <span class="cnt" id="{{prefix}}-cntKeys"></span>
-        </button>
-        <button onclick="{{plugin}}.showPanel('Other')">
-            Other <span class="cnt" id="{{prefix}}-cntOther"></span>
-        </button>
-        <button onclick="{{plugin}}.showPanel('Capsules')">
-            Capsules <span class="cnt" id="{{prefix}}-cntCapsules"></span>
-        </button>
-    </div>
-
-    <hr>
-
-    <div id="{{prefix}}-Inventory-Panel" style="display: block;">
-        <table class="inventoryTable">
-            <thead>
-            <tr>
-                <th>Resonators <span class="cnt" id="{{prefix}}-cntResonators"></span></th>
-                <th colspan="2">Weapons <span class="cnt" id="{{prefix}}-cntWeapons"></span></th>
-                <th colspan="3">Mods <span class="cnt" id="{{prefix}}-cntMods"></span></th>
-            </tr>
-            <tr>
-                <th></th>
-                <th>Bursters <span class="cnt" id="{{prefix}}-cntBursters"></span></th>
-                <th>
-                    Strikes <span class="cnt" id="{{prefix}}-cntStrikes"></span>
-                    &amp; Flips <span class="cnt" id="{{prefix}}-cntFlips"></span>
-                </th>
-                <th>Shields <span class="cnt" id="{{prefix}}-cntModShields"></span></th>
-                <th>Hack <span class="cnt" id="{{prefix}}-cntModHack"></span></th>
-                <th>Other <span class="cnt" id="{{prefix}}-cntModOther"></span></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <!-- Resos -->
-                <td id="{{prefix}}-Resonators-Container" class="item-container">Fetching inventory...</td>
-                <!-- Weapons -->
-                <td id="{{prefix}}-Bursters-Container" class="item-container"></td>
-                <td id="{{prefix}}-Strikes-Container" class="item-container"></td>
-                <!-- Mods -->
-                <td id="{{prefix}}-Shields-Container" class="item-container"></td>
-                <td id="{{prefix}}-HackMods-Container" class="item-container"></td>
-                <td id="{{prefix}}-OtherMods-Container" class="item-container"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div id="{{prefix}}-Keys-Panel" style="display: none;">
-        <table class="inventoryTable" id="keysTable">
-            <thead>
-            <tr>
-                <th data-type="string"><a href="#">Name</a></th>
-                <th data-type="distance"><a href="#">Distance</a></th>
-                <th data-type="number"><a href="#">Total</a> <span class="cnt" id="{{prefix}}-cntKeysTotal"></span></th>
-                <th>atHand <span class="cnt" id="{{prefix}}-cntKeysAtHand"></span></th>
-                <th>Capsules <span class="cnt" id="{{prefix}}-cntKeysCapsules"></span></th>
-            </tr>
-            </thead>
-            <tbody id="{{prefix}}-Keys-Container"></tbody>
-        </table>
-    </div>
-
-    <div id="{{prefix}}-Other-Panel" style="display: none;">
-        <table class="inventoryTable">
-            <thead>
-            <tr>
-                <th>Cubes <span class="cnt" id="{{prefix}}-cntCubes"></span></th>
-                <th colspan="2">Boosts <span class="cnt" id="{{prefix}}-cntBoosts"></span></th>
-            </tr>
-            <tr>
-                <th></th>
-                <th>Play <span class="cnt" id="{{prefix}}-cntBoostsPlay"></span></th>
-                <th>Beacons <span class="cnt" id="{{prefix}}-cntBoostsBeacons"></span></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td id="{{prefix}}-Cubes-Container" class="item-container"></td>
-                <td id="{{prefix}}-Boosts-Play-Container" class="item-container"></td>
-                <td id="{{prefix}}-Boosts-Beacons-Container" class="item-container"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div id="{{prefix}}-Capsules-Panel" style="display: none;">
-        <h3>Edit Key Capsule Names</h3>
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-            </tr>
-            </thead>
-            <tbody id="{{prefix}}-KeyCapsules-Container"></tbody>
-        </table>
-        <button onclick="{{plugin}}.storeCapsuleNames()">Save</button>
-    </div>
-
-    <div id="{{prefix}}-Info-Panel" style="display: none;">
-        <h3>{{product.name}} {{product.version}}</h3>
-        <hr>
-        <!--
-        <button>Export</button>
-        -->
-        <button onclick="{{plugin}}.refresh()">Refresh</button>
-        <hr>
+    <div id="{{prefix}}-Tabs">
         <ul>
+            <li class="inventory-total">Total: <span class="cnt" id="{{prefix}}-cntTotal"></span></li>
             <li>
-                Code and Issues:
-                <a href="https://github.com/elkuku/iitc-kuku-inventory" target="_blank">elkuku/iitc-kuku-inventory</a>
+                <a href="#{{prefix}}-Inventory-Panel">
+                    Equipment <span class="cnt" id="{{prefix}}-cntEquipment"></span>
+                </a>
             </li>
-            <li>
-                Questions:
-                <a href="https://t.me/nikp3h" target="_blank">Telegram: nikp3h</a>
-            </li>
-            <li>
-                Author:
-                <a href="https://github.com/elkuku" target="_blank">elkuku</a>
-                aka
-                <span class="nickname enl">nikp3h</span>
-            </li>
+            <li><a href="#{{prefix}}-Keys-Panel">Keys <span class="cnt" id="{{prefix}}-cntKeys"></span></a></li>
+            <li><a href="#{{prefix}}-Other-Panel">Other <span class="cnt" id="{{prefix}}-cntOther"></span></a></li>
+            <li style="float: right"><a href="#{{prefix}}-Info-Panel">Settings</a></li>
+            <li style="float: right"><a href="#{{prefix}}-Capsules-Panel">Capsules <span class="cnt" id="{{prefix}}-cntCapsules"></span></a></li>
         </ul>
-    </div>
+
+        <div id="{{prefix}}-Inventory-Panel">
+            <table class="inventoryTable">
+                <thead>
+                <tr>
+                    <th>Resonators <span class="cnt" id="{{prefix}}-cntResonators"></span></th>
+                    <th colspan="2">Weapons <span class="cnt" id="{{prefix}}-cntWeapons"></span></th>
+                    <th colspan="3">Mods <span class="cnt" id="{{prefix}}-cntMods"></span></th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Bursters <span class="cnt" id="{{prefix}}-cntBursters"></span></th>
+                    <th>
+                        Strikes <span class="cnt" id="{{prefix}}-cntStrikes"></span>
+                        &amp; Flips <span class="cnt" id="{{prefix}}-cntFlips"></span>
+                    </th>
+                    <th>Shields <span class="cnt" id="{{prefix}}-cntModShields"></span></th>
+                    <th>Hack <span class="cnt" id="{{prefix}}-cntModHack"></span></th>
+                    <th>Other <span class="cnt" id="{{prefix}}-cntModOther"></span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <!-- Resos -->
+                    <td id="{{prefix}}-Resonators-Container" class="item-container">Fetching inventory...</td>
+                    <!-- Weapons -->
+                    <td id="{{prefix}}-Bursters-Container" class="item-container"></td>
+                    <td id="{{prefix}}-Strikes-Container" class="item-container"></td>
+                    <!-- Mods -->
+                    <td id="{{prefix}}-Shields-Container" class="item-container"></td>
+                    <td id="{{prefix}}-HackMods-Container" class="item-container"></td>
+                    <td id="{{prefix}}-OtherMods-Container" class="item-container"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="{{prefix}}-Keys-Panel">
+            <table class="inventoryTable" id="keysTable">
+                <thead>
+                <tr>
+                    <th data-type="string"><a href="#">Name</a></th>
+                    <th data-type="distance"><a href="#">Distance</a></th>
+                    <th data-type="number"><a href="#">Total</a> <span class="cnt" id="{{prefix}}-cntKeysTotal"></span>
+                    </th>
+                    <th>atHand <span class="cnt" id="{{prefix}}-cntKeysAtHand"></span></th>
+                    <th>Capsules <span class="cnt" id="{{prefix}}-cntKeysCapsules"></span></th>
+                </tr>
+                </thead>
+                <tbody id="{{prefix}}-Keys-Container"></tbody>
+            </table>
+        </div>
+
+        <div id="{{prefix}}-Other-Panel">
+            <table class="inventoryTable">
+                <thead>
+                <tr>
+                    <th>Cubes <span class="cnt" id="{{prefix}}-cntCubes"></span></th>
+                    <th colspan="2">Boosts <span class="cnt" id="{{prefix}}-cntBoosts"></span></th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Play <span class="cnt" id="{{prefix}}-cntBoostsPlay"></span></th>
+                    <th>Beacons <span class="cnt" id="{{prefix}}-cntBoostsBeacons"></span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="{{prefix}}-Cubes-Container" class="item-container"></td>
+                    <td id="{{prefix}}-Boosts-Play-Container" class="item-container"></td>
+                    <td id="{{prefix}}-Boosts-Beacons-Container" class="item-container"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="{{prefix}}-Capsules-Panel">
+            <h3>Edit Key Capsule Names</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+                </thead>
+                <tbody id="{{prefix}}-KeyCapsules-Container"></tbody>
+            </table>
+            <button onclick="{{plugin}}.storeCapsuleNames()">Save</button>
+        </div>
+
+        <div id="{{prefix}}-Info-Panel">
+            <h3>{{product.name}} {{product.version}}</h3>
+            <hr>
+            <!--
+            <button>Export</button>
+            -->
+            <button onclick="{{plugin}}.refresh()">Refresh</button>
+            <hr>
+            <ul>
+                <li>
+                    Code and Issues:
+                    <a href="https://github.com/elkuku/iitc-kuku-inventory"
+                       target="_blank">elkuku/iitc-kuku-inventory</a>
+                </li>
+                <li>
+                    Questions:
+                    <a href="https://t.me/nikp3h" target="_blank">Telegram: nikp3h</a>
+                </li>
+                <li>
+                    Author:
+                    <a href="https://github.com/elkuku" target="_blank">elkuku</a>
+                    aka
+                    <span class="nickname enl">nikp3h</span>
+                </li>
+            </ul>
+        </div>
+    </div> <!-- Tabs -->
 
 </div> <!-- container -->
 

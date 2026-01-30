@@ -86,16 +86,6 @@ export class DialogHelper {
         }).parent()
     }
 
-    public showPanel(name: string) {
-        for (const panel of ['Inventory', 'Keys', 'Other', 'Info', 'Capsules']) {
-            const element = document.getElementById(`${this.pluginName}-${panel}-Panel`)
-            if (element) element.style.display = 'none'
-        }
-
-        const element = document.getElementById(`${this.pluginName}-${name}-Panel`)
-        if (element) element.style.display = 'block'
-    }
-
     public async refresh() {
         try {
             await this.inventoryHelper.refresh()

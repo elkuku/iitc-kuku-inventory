@@ -51,10 +51,6 @@ class KuKuInventory implements Plugin.Class {
         this.storageHelper.register()
     }
 
-    public showPanel(name: string) {
-        this.dialogHelper.showPanel(name)
-    }
-
     public async refresh() {
         await this.dialogHelper.refresh()
     }
@@ -138,6 +134,8 @@ class KuKuInventory implements Plugin.Class {
             })
 
             await this.dialogHelper.updateDialog()
+
+            $(`#${PLUGIN_NAME}-Tabs`).tabs()
         }
     }
 }
