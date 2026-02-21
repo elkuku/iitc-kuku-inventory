@@ -35,7 +35,7 @@ export class DialogHelper {
         this.handlebars = window.plugin.HelperHandlebars
 
         if (!this.handlebars) {
-            alert(`${this.pluginName} - Handlebars helper not found`)
+            alert(`${this.pluginName} - Handlebars helper not found. <a href="https://iitc.app/community_plugins#helper-handlebars-by-elkuku" target="_blank">Download</a>`)
             throw new Error(`${this.pluginName} - Handlebars helper not found`)
         }
 
