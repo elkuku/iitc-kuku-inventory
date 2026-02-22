@@ -1,6 +1,7 @@
 import * as Plugin from "iitcpluginkit"
 
 import DialogHelper from './DialogHelper'
+import {ExportHelper} from './ExportHelper'
 import {InventoryHelper} from './InventoryHelper'
 import {LayerHelper} from './LayerHelper'
 import {SidebarHelper} from './SidebarHelper'
@@ -12,6 +13,7 @@ const PLUGIN_NAME = 'KuKuInventory'
 class KuKuInventory implements Plugin.Class {
 
     private dialogHelper: DialogHelper
+    private exportHelper: ExportHelper
     private dialog: JQuery | undefined
     private layerHelper: LayerHelper
     private sidebarHelper: SidebarHelper
@@ -29,6 +31,7 @@ class KuKuInventory implements Plugin.Class {
         const inventoryHelper = new InventoryHelper()
 
         this.dialogHelper = new DialogHelper(PLUGIN_NAME, 'Inventory', inventoryHelper)
+        this.exportHelper = new ExportHelper(inventoryHelper)
         this.storageHelper = new StorageHelper(PLUGIN_NAME, this.updateCallback)
         this.layerHelper = new LayerHelper('Portal keys')
         this.sidebarHelper = new SidebarHelper()
@@ -55,14 +58,21 @@ class KuKuInventory implements Plugin.Class {
         await this.dialogHelper.refresh()
     }
 
-    public async exportKeys(polygonOnly: boolean, detailed: boolean) {
-        await this.dialogHelper.exportKeys(polygonOnly, detailed)
-    }
-
     public async exportFromForm() {
         const scope = document.querySelector<HTMLInputElement>(`input[name="${PLUGIN_NAME}-export-scope"]:checked`)?.value ?? 'all'
         const detail = document.querySelector<HTMLInputElement>(`input[name="${PLUGIN_NAME}-export-detail"]:checked`)?.value ?? 'total'
-        await this.dialogHelper.exportKeys(scope === 'polygon', detail === 'detailed')
+        const inv = (document.getElementById(`${PLUGIN_NAME}-export-inventory`) as HTMLInputElement | null)?.checked ?? false
+        await this.exportHelper.exportAll({
+            includeKeys: (document.getElementById(`${PLUGIN_NAME}-export-keys`) as HTMLInputElement | null)?.checked ?? false,
+            polygonOnly: scope === 'polygon',
+            detailed: detail === 'detailed',
+            resonators: inv && ((document.getElementById(`${PLUGIN_NAME}-export-inv-resonators`) as HTMLInputElement | null)?.checked ?? false),
+            weapons: inv && ((document.getElementById(`${PLUGIN_NAME}-export-inv-weapons`) as HTMLInputElement | null)?.checked ?? false),
+            mods: inv && ((document.getElementById(`${PLUGIN_NAME}-export-inv-mods`) as HTMLInputElement | null)?.checked ?? false),
+            cubes: inv && ((document.getElementById(`${PLUGIN_NAME}-export-inv-cubes`) as HTMLInputElement | null)?.checked ?? false),
+            boosts: inv && ((document.getElementById(`${PLUGIN_NAME}-export-inv-boosts`) as HTMLInputElement | null)?.checked ?? false),
+            includeAgent: (document.getElementById(`${PLUGIN_NAME}-export-agent`) as HTMLInputElement | null)?.checked ?? false,
+        })
     }
 
     public async storeCapsuleNames() {
@@ -103,6 +113,7 @@ class KuKuInventory implements Plugin.Class {
         this.layerHelper.setCapsuleNames(this.capsuleNames)
         this.sidebarHelper.setCapsuleNames(this.capsuleNames)
         this.dialogHelper.setCapsuleNames(this.capsuleNames)
+        this.exportHelper.setCapsuleNames(this.capsuleNames)
     }
 
     private onPortalAdded = (data: any) => {

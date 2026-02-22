@@ -93,28 +93,72 @@
         <div id="{{prefix}}-Export-Panel">
             <form class="export-form">
                 <fieldset>
-                    <legend>Scope</legend>
-                    <label>
-                        <input type="radio" name="{{prefix}}-export-scope" value="all" checked>
-                        All keys
-                    </label>
-                    <label>
-                        <input type="radio" name="{{prefix}}-export-scope" value="polygon">
-                        Polygon only (requires Draw Tools)
-                    </label>
+                    <legend>
+                        <label>
+                            <input type="checkbox" id="{{prefix}}-export-keys"
+                                onchange="document.getElementById('{{prefix}}-export-keys-options').style.display=this.checked?'':'none'">
+                            Keys
+                        </label>
+                    </legend>
+                    <div id="{{prefix}}-export-keys-options" style="display: none">
+                        <label>
+                            <input type="radio" name="{{prefix}}-export-scope" value="all" checked>
+                            All keys
+                        </label>
+                        <label>
+                            <input type="radio" name="{{prefix}}-export-scope" value="polygon">
+                            Only keys inside polygon(s)
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="{{prefix}}-export-detail" value="total" checked>
+                            Total only
+                        </label>
+                        <label>
+                            <input type="radio" name="{{prefix}}-export-detail" value="detailed">
+                            Detailed (atHand + capsules)
+                        </label>
+                    </div>
                 </fieldset>
                 <fieldset>
-                    <legend>Detail level</legend>
+                    <legend>
+                        <label>
+                            <input type="checkbox" id="{{prefix}}-export-inventory"
+                                onchange="document.getElementById('{{prefix}}-export-inventory-options').style.display=this.checked?'':'none'">
+                            Inventory
+                        </label>
+                    </legend>
+                    <div id="{{prefix}}-export-inventory-options" style="display: none">
+                        <label>
+                            <input type="checkbox" id="{{prefix}}-export-inv-resonators" checked>
+                            Resonators
+                        </label>
+                        <label>
+                            <input type="checkbox" id="{{prefix}}-export-inv-weapons" checked>
+                            Weapons
+                        </label>
+                        <label>
+                            <input type="checkbox" id="{{prefix}}-export-inv-mods" checked>
+                            Mods
+                        </label>
+                        <label>
+                            <input type="checkbox" id="{{prefix}}-export-inv-cubes" checked>
+                            Cubes
+                        </label>
+                        <label>
+                            <input type="checkbox" id="{{prefix}}-export-inv-boosts" checked>
+                            Boosts
+                        </label>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Options</legend>
                     <label>
-                        <input type="radio" name="{{prefix}}-export-detail" value="total" checked>
-                        Total only
-                    </label>
-                    <label>
-                        <input type="radio" name="{{prefix}}-export-detail" value="detailed">
-                        Detailed (atHand + capsules)
+                        <input type="checkbox" id="{{prefix}}-export-agent">
+                        Include agent name
                     </label>
                 </fieldset>
-                <button type="button" onclick="{{plugin}}.exportFromForm()">Export JSON</button>
+                <button type="button" onclick="{{plugin}}.exportFromForm()">Export</button>
             </form>
         </div>
 

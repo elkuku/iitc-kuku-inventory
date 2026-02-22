@@ -55,8 +55,16 @@ span.cnt, td.cnt {
     cursor: pointer;
 }
 
+.export-form legend label {
+    display: inline;
+}
+
 .export-form label input {
     margin-right: 6px;
+}
+
+.export-form [id$="-options"] {
+    padding-left: 12px;
 }
 
 .icon {
