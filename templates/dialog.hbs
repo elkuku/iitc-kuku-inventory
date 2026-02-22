@@ -11,6 +11,7 @@
             <li><a href="#{{prefix}}-Keys-Panel">Keys <span class="cnt" id="{{prefix}}-cntKeys"></span></a></li>
             <li><a href="#{{prefix}}-Other-Panel">Other <span class="cnt" id="{{prefix}}-cntOther"></span></a></li>
             <li style="float: right"><a href="#{{prefix}}-Info-Panel">Settings</a></li>
+            <li style="float: right"><a href="#{{prefix}}-Export-Panel">Export</a></li>
             <li style="float: right"><a href="#{{prefix}}-Capsules-Panel">Capsules <span class="cnt" id="{{prefix}}-cntCapsules"></span></a></li>
         </ul>
 
@@ -89,6 +90,34 @@
             </table>
         </div>
 
+        <div id="{{prefix}}-Export-Panel">
+            <form class="export-form">
+                <fieldset>
+                    <legend>Scope</legend>
+                    <label>
+                        <input type="radio" name="{{prefix}}-export-scope" value="all" checked>
+                        All keys
+                    </label>
+                    <label>
+                        <input type="radio" name="{{prefix}}-export-scope" value="polygon">
+                        Polygon only (requires Draw Tools)
+                    </label>
+                </fieldset>
+                <fieldset>
+                    <legend>Detail level</legend>
+                    <label>
+                        <input type="radio" name="{{prefix}}-export-detail" value="total" checked>
+                        Total only
+                    </label>
+                    <label>
+                        <input type="radio" name="{{prefix}}-export-detail" value="detailed">
+                        Detailed (atHand + capsules)
+                    </label>
+                </fieldset>
+                <button type="button" onclick="{{plugin}}.exportFromForm()">Export JSON</button>
+            </form>
+        </div>
+
         <div id="{{prefix}}-Capsules-Panel">
             <h3>Edit Key Capsule Names</h3>
             <table>
@@ -106,9 +135,6 @@
         <div id="{{prefix}}-Info-Panel">
             <h3>{{product.name}} {{product.version}}</h3>
             <hr>
-            <!--
-            <button>Export</button>
-            -->
             <button onclick="{{plugin}}.refresh()">Refresh</button>
             <hr>
             <ul>

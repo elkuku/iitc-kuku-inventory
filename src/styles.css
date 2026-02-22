@@ -37,6 +37,28 @@ span.cnt, td.cnt {
     white-space: nowrap;
 }
 
+.export-form fieldset {
+    border: 1px solid #555;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+}
+
+.export-form legend {
+    padding: 0 6px;
+    font-weight: bold;
+}
+
+.export-form label {
+    display: block;
+    margin: 6px 0;
+    cursor: pointer;
+}
+
+.export-form label input {
+    margin-right: 6px;
+}
+
 .icon {
     min-width: 64px;
     height: 64px;

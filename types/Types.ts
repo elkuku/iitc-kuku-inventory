@@ -92,11 +92,25 @@ export interface HelperHandlebars {
 }
 
 declare global {
+    namespace IITC {
+        namespace utils {
+            /**
+             * Point-in-polygon test (PNPOLY ray-casting algorithm).
+             * Source: core/code/utils.js in IITC-CE.
+             * NOTE: despite the JSDoc saying L.LatLng, the implementation uses .x/.y
+             * (L.Point properties). Convert with map.latLngToLayerPoint() before calling.
+             */
+            function isPointInPolygon(polygon: L.Point[], point: L.Point): boolean
+        }
+    }
     interface Window {
         plugin: {
             KuKuInventory: any
             sync?: PluginSync
             HelperHandlebars: HelperHandlebars
+            drawTools?: {
+                drawnItems: L.FeatureGroup<L.ILayer>
+            }
         }
     }
 }

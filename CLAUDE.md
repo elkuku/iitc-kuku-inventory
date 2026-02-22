@@ -52,6 +52,24 @@ Ingress API → InventoryFetcher → InventoryParser → InventoryHelper → UI 
 - `portalSelected` — update marker detail on selection
 - `portalDetailsUpdated` — inject key info into sidebar
 
+### IITC Utilities
+
+The IITC-CE base ([`ingress-intel-total-conversion`](https://github.com/IITC-CE/ingress-intel-total-conversion)) exposes utilities that should be preferred over custom re-implementations:
+
+| Utility | How to call | Notes |
+|---|---|---|
+| Point-in-polygon | `IITC.utils.isPointInPolygon(ring, point)` | Source: `core/code/utils.js` |
+
+**`IITC.utils.isPointInPolygon` usage:** both `ring` (`L.LatLng[]`) and `point` (`L.LatLng`) are geographic coordinates — pass them directly without converting to layer points.
+
+```typescript
+const testPoint = L.latLng(lat, lng)
+const ring = this.getOuterRing(polygon) // L.LatLng[]
+IITC.utils.isPointInPolygon(ring, testPoint) // → boolean
+```
+
+The Draw Tools plugin stores drawn polygons in `window.plugin.drawTools.drawnItems` (`L.FeatureGroup`). Drawn polygons may be `L.GeodesicPolygon` (extends `L.Polygon`), so `instanceof L.Polygon` catches both. `getLatLngs()` returns a flat `L.LatLng[]` on Leaflet 0.x or `L.LatLng[][]` on Leaflet 1.x — handle both (see `getOuterRing` in `DialogHelper.ts`).
+
 ### Code Style
 
 - Semicolon-free TypeScript (enforced by ESLint)

@@ -1,6 +1,6 @@
 import * as Plugin from "iitcpluginkit"
 
-import {DialogHelper} from './DialogHelper'
+import DialogHelper from './DialogHelper'
 import {InventoryHelper} from './InventoryHelper'
 import {LayerHelper} from './LayerHelper'
 import {SidebarHelper} from './SidebarHelper'
@@ -53,6 +53,16 @@ class KuKuInventory implements Plugin.Class {
 
     public async refresh() {
         await this.dialogHelper.refresh()
+    }
+
+    public async exportKeys(polygonOnly: boolean, detailed: boolean) {
+        await this.dialogHelper.exportKeys(polygonOnly, detailed)
+    }
+
+    public async exportFromForm() {
+        const scope = document.querySelector<HTMLInputElement>(`input[name="${PLUGIN_NAME}-export-scope"]:checked`)?.value ?? 'all'
+        const detail = document.querySelector<HTMLInputElement>(`input[name="${PLUGIN_NAME}-export-detail"]:checked`)?.value ?? 'total'
+        await this.dialogHelper.exportKeys(scope === 'polygon', detail === 'detailed')
     }
 
     public async storeCapsuleNames() {
