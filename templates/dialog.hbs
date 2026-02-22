@@ -10,9 +10,8 @@
             </li>
             <li><a href="#{{prefix}}-Keys-Panel">Keys <span class="cnt" id="{{prefix}}-cntKeys"></span></a></li>
             <li><a href="#{{prefix}}-Other-Panel">Other <span class="cnt" id="{{prefix}}-cntOther"></span></a></li>
-            <li style="float: right"><a href="#{{prefix}}-Info-Panel">Settings</a></li>
             <li style="float: right"><a href="#{{prefix}}-Export-Panel">Export</a></li>
-            <li style="float: right"><a href="#{{prefix}}-Capsules-Panel">Capsules <span class="cnt" id="{{prefix}}-cntCapsules"></span></a></li>
+            <li style="float: right"><a href="#{{prefix}}-Info-Panel">Settings</a></li>
         </ul>
 
         <div id="{{prefix}}-Inventory-Panel">
@@ -162,7 +161,11 @@
             </form>
         </div>
 
-        <div id="{{prefix}}-Capsules-Panel">
+        <div id="{{prefix}}-Info-Panel">
+            <h3>{{product.name}} {{product.version}}</h3>
+            <hr>
+            <button onclick="{{plugin}}.refresh()">Force Refresh</button>
+            <hr>
             <h3>Edit Key Capsule Names</h3>
             <table>
                 <thead>
@@ -174,13 +177,8 @@
                 <tbody id="{{prefix}}-KeyCapsules-Container"></tbody>
             </table>
             <button onclick="{{plugin}}.storeCapsuleNames()">Save</button>
-        </div>
-
-        <div id="{{prefix}}-Info-Panel">
-            <h3>{{product.name}} {{product.version}}</h3>
             <hr>
-            <button onclick="{{plugin}}.refresh()">Refresh</button>
-            <hr>
+            <h3>Info</h3>
             <ul>
                 <li>
                     Code and Issues:
