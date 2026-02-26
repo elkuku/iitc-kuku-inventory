@@ -127,6 +127,7 @@ class DialogHelper {
         this.updateCountField('cntTotal', cntEquipment + cntKeys + cntOther)
 
         this.enableTableSorting('keysTable')
+        this.enableKeysSearch('keysTable', `${this.pluginName}-keys-search`)
     }
 
     public sortTable(tableId: string, columnIndex: number, type: 'string' | 'number' | 'distance', ascending: boolean): void {
@@ -162,6 +163,9 @@ class DialogHelper {
 
     public enableTableSorting(tableId: string): void {
         const table = document.getElementById(tableId) as HTMLTableElement
+        if (!table || table.dataset.sortEnabled) return
+        table.dataset.sortEnabled = 'true'
+
         const headers = table.querySelectorAll('th')
 
         headers.forEach((header, i) => {
@@ -184,6 +188,23 @@ class DialogHelper {
 
                     indicator.textContent = (ascending) ? '▲' : '▼'
                 })
+            }
+        })
+    }
+
+    public enableKeysSearch(tableId: string, inputId: string): void {
+        const input = document.getElementById(inputId) as HTMLInputElement | null
+        if (!input || input.dataset.searchEnabled) return
+        input.dataset.searchEnabled = 'true'
+
+        input.addEventListener('input', () => {
+            const query = input.value.toLowerCase().trim()
+            const table = document.getElementById(tableId) as HTMLTableElement | null
+            if (!table) return
+
+            for (const row of table.tBodies[0].rows) {
+                const text = row.cells[0]?.textContent?.toLowerCase() ?? ''
+                row.style.display = !query || text.includes(query) ? '' : 'none'
             }
         })
     }

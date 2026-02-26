@@ -51,19 +51,28 @@
         </div>
 
         <div id="{{prefix}}-Keys-Panel">
-            <table class="inventoryTable" id="keysTable">
-                <thead>
-                <tr>
-                    <th data-type="string"><a href="#">Name</a></th>
-                    <th data-type="distance"><a href="#">Distance</a></th>
-                    <th data-type="number"><a href="#">Total</a> <span class="cnt" id="{{prefix}}-cntKeysTotal"></span>
-                    </th>
-                    <th>atHand <span class="cnt" id="{{prefix}}-cntKeysAtHand"></span></th>
-                    <th>Capsules <span class="cnt" id="{{prefix}}-cntKeysCapsules"></span></th>
-                </tr>
-                </thead>
-                <tbody id="{{prefix}}-Keys-Container"></tbody>
-            </table>
+            <div class="keys-search-bar">
+                <input type="text"
+                       id="{{prefix}}-keys-search"
+                       aria-label="Search portal"
+                       placeholder="Search portal…"
+                       autocomplete="off">
+            </div>
+            <div class="keys-table-scroll">
+                <table class="inventoryTable" id="keysTable">
+                    <thead>
+                    <tr>
+                        <th data-type="string"><a href="#">Name</a></th>
+                        <th data-type="distance"><a href="#">Distance</a></th>
+                        <th data-type="number"><a href="#">Total</a> <span class="cnt" id="{{prefix}}-cntKeysTotal"></span>
+                        </th>
+                        <th>atHand <span class="cnt" id="{{prefix}}-cntKeysAtHand"></span></th>
+                        <th>Capsules <span class="cnt" id="{{prefix}}-cntKeysCapsules"></span></th>
+                    </tr>
+                    </thead>
+                    <tbody id="{{prefix}}-Keys-Container"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="{{prefix}}-Other-Panel">
