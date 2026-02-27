@@ -4,15 +4,35 @@ import {CapsuleNamesMap} from './StorageHelper'
 
 export class LayerHelper {
     private readonly layerGroup: L.LayerGroup<any>
-    private keys: Map<string, KeyInfo>
+    private keys: Map<string, KeyInfo> = new Map()
     private markers: Map<string, L.Marker>
     private capsuleNames: CapsuleNamesMap = {}
+    private displayMode: 'count' | 'icon' = 'count'
 
     constructor(name: string) {
         this.layerGroup = new L.LayerGroup()
         this.markers = new Map<string, L.Marker>()
 
         window.addLayerGroup(name, this.layerGroup, true)
+    }
+
+    public setDisplayMode(mode: 'count' | 'icon'): void {
+        this.displayMode = mode
+        this.refreshMarkers()
+    }
+
+    private refreshMarkers(): void {
+        for (const marker of this.markers.values()) {
+            this.layerGroup.removeLayer(marker)
+        }
+        this.markers.clear()
+
+        for (const guid of Object.keys(window.portals)) {
+            if (!this.keys.has(guid)) continue
+            const marker = this.createMarker(guid)
+            this.layerGroup.addLayer(marker)
+            this.markers.set(guid, marker)
+        }
     }
 
     public setKeys(keys: Map<string, KeyInfo>) {
@@ -63,7 +83,17 @@ export class LayerHelper {
         const keyInfo = this.keys.get(guid)
         if (!keyInfo) throw new Error('keyInfo not found')
 
-        let innerHtml = `<strong>${keyInfo.total}</strong>`
+        const isIconMode = this.displayMode === 'icon' && !withDetails
+
+        let innerHtml: string
+        if (isIconMode) {
+            innerHtml = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14">'
+                + '<path fill="currentColor" d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6'
+                + 'c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>'
+                + '</svg>'
+        } else {
+            innerHtml = `<strong>${keyInfo.total}</strong>`
+        }
 
         if (withDetails) {
             if (keyInfo.atHand) innerHtml += `<br /><em>Hand: ${keyInfo.atHand}</em>`
@@ -76,9 +106,9 @@ export class LayerHelper {
             }
         }
 
-        const bubbleClass = withDetails
-            ? 'key-bubble key-bubble--details'
-            : 'key-bubble'
+        let bubbleClass = 'key-bubble'
+        if (isIconMode) bubbleClass += ' key-bubble--icon'
+        else if (withDetails) bubbleClass += ' key-bubble--details'
 
         return L.marker(
             new L.LatLng(keyInfo.portal.lat, keyInfo.portal.lng),

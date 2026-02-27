@@ -34,6 +34,7 @@ class KuKuInventory implements Plugin.Class {
         this.exportHelper = new ExportHelper(inventoryHelper)
         this.storageHelper = new StorageHelper(PLUGIN_NAME, this.updateCallback)
         this.layerHelper = new LayerHelper('Portal keys')
+        this.layerHelper.setDisplayMode(this.storageHelper.loadMapDisplayMode())
         this.sidebarHelper = new SidebarHelper()
 
         this.capsuleNames = this.storageHelper.capsuleNames
@@ -56,6 +57,11 @@ class KuKuInventory implements Plugin.Class {
 
     public async refresh() {
         await this.dialogHelper.refresh()
+    }
+
+    public setMapDisplay = (mode: 'count' | 'icon'): void => {
+        this.storageHelper.saveMapDisplayMode(mode)
+        this.layerHelper.setDisplayMode(mode)
     }
 
     public async exportFromForm() {
@@ -157,6 +163,9 @@ class KuKuInventory implements Plugin.Class {
             await this.dialogHelper.updateDialog()
 
             $(`#${PLUGIN_NAME}-Tabs`).tabs()
+
+            const modeSelect = document.getElementById(`${PLUGIN_NAME}-map-display-mode`) as HTMLSelectElement | null
+            if (modeSelect) modeSelect.value = this.storageHelper.loadMapDisplayMode()
         }
     }
 }

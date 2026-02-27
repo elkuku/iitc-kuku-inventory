@@ -175,6 +175,15 @@
             <hr>
             <button onclick="{{plugin}}.refresh()">Force Refresh</button>
             <hr>
+            <h3>Map Display</h3>
+            <p>
+                <label for="{{prefix}}-map-display-mode">Mode:&nbsp;</label>
+                <select id="{{prefix}}-map-display-mode" onchange="{{plugin}}.setMapDisplay(this.value)">
+                    <option value="count">Count</option>
+                    <option value="icon">Icon</option>
+                </select>
+            </p>
+            <hr>
             <h3>Edit Key Capsule Names</h3>
             <table>
                 <thead>

@@ -83,6 +83,12 @@ span.cnt, td.cnt {
     line-height: 1.4;
 }
 
+/* Icon-mode variant: compact square padding for the SVG key */
+.key-bubble--icon {
+    padding: 4px;
+    line-height: 1;
+}
+
 /* Details popup: top-left corner at the portal pixel */
 .key-bubble--details {
     transform: translate(0, 0);

@@ -5,6 +5,7 @@ export type CapsuleNamesMap = Record<string, string>
 export interface Settings {
     autoSync: boolean
     version: number
+    mapDisplayMode: 'count' | 'icon'
 }
 
 export class StorageHelper {
@@ -15,7 +16,7 @@ export class StorageHelper {
 
     private settingsStore = new LocalStorageHelper<Settings>(
         'settings',
-        {autoSync: true, version: 1}
+        {autoSync: true, version: 1, mapDisplayMode: 'count'}
     )
 
     public capsuleNames: CapsuleNamesMap = this.capsuleNamesStore.load()
@@ -89,5 +90,14 @@ export class StorageHelper {
         if (window.plugin.sync) {
             window.plugin.sync.updateMap(this.pluginName, 'settings', ['settings'])
         }
+    }
+
+    public loadMapDisplayMode(): 'count' | 'icon' {
+        return this.settings.mapDisplayMode ?? 'count'
+    }
+
+    public saveMapDisplayMode(mode: 'count' | 'icon'): void {
+        this.settings.mapDisplayMode = mode
+        this.persistField('settings')
     }
 }
