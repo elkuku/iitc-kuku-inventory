@@ -63,27 +63,34 @@ export class LayerHelper {
         const keyInfo = this.keys.get(guid)
         if (!keyInfo) throw new Error('keyInfo not found')
 
-        let html = `${keyInfo.total}`
+        let innerHtml = `<strong>${keyInfo.total}</strong>`
 
         if (withDetails) {
-            if (keyInfo.atHand) html += `<br /><strong>Hand: ${keyInfo.atHand}</strong>`
+            if (keyInfo.atHand) innerHtml += `<br /><em>Hand: ${keyInfo.atHand}</em>`
 
             if (keyInfo.capsules) {
                 for (const [key, count] of keyInfo.capsules) {
                     const capsuleName = this.capsuleNames[key] ?? key
-                    html += `<br />${capsuleName}: ${count}`
+                    innerHtml += `<br />${capsuleName}: ${count}`
                 }
             }
         }
+
+        const bubbleClass = withDetails
+            ? 'key-bubble key-bubble--details'
+            : 'key-bubble'
 
         return L.marker(
             new L.LatLng(keyInfo.portal.lat, keyInfo.portal.lng),
             {
                 icon: new L.DivIcon({
-                    html: html,
-                    className: 'layer-key-info'
+                    html: `<div class="${bubbleClass}">${innerHtml}</div>`,
+                    className: 'layer-key-info',
+                    iconSize: [0, 0],
+                    iconAnchor: [0, 0],
                 }),
                 interactive: false,
+                zIndexOffset: withDetails ? 10000 : 0,
             }
         )
     }

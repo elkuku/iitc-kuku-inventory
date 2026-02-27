@@ -58,15 +58,34 @@ span.cnt, td.cnt {
     color: lime;
 }
 
+/* Outer Leaflet DivIcon — zero-size anchor placed exactly at the portal pixel */
 .layer-key-info {
-    font-size: 11px;
-    color: #ffff00;
-    font-family: monospace;
-    text-align: center;
-    text-shadow: 0 0 1px black, 0 0 1em black, 0 0 0.2em black;
+    overflow: visible !important;
     pointer-events: none;
     -webkit-text-size-adjust: none;
+}
+
+/* Visual bubble centred over the portal via transform */
+.key-bubble {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    background: #111;
+    border: 1px solid rgba(255, 200, 0, 0.65);
+    border-radius: 4px;
+    padding: 3px 7px;
+    font-size: 11px;
+    font-family: monospace;
+    color: #ffcc00;
+    text-align: left;
     white-space: nowrap;
+    line-height: 1.4;
+}
+
+/* Details popup: top-left corner at the portal pixel */
+.key-bubble--details {
+    transform: translate(0, 0);
 }
 
 .export-form fieldset {
