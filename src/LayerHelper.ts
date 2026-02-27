@@ -73,10 +73,22 @@ export class LayerHelper {
         this.layerGroup.removeLayer(this.markers.get(guid))
         this.markers.delete(guid)
 
-        const newMarker = this.createMarker(guid, showDetails)
+        const newMarker = this.createMarker(guid, showDetails && !this.teamInventoryHandles(guid))
 
         this.layerGroup.addLayer(newMarker)
         this.markers.set(guid, newMarker)
+    }
+
+    /**
+     * Returns true when the team inventory layer is active and has data for
+     * this portal, meaning it will show its own details popup and the
+     * inventory plugin should not show a competing one.
+     */
+    private teamInventoryHandles(guid: string): boolean {
+        const teamLayer = (window.plugin as any).KuKuTeamInventory?.layerHelper
+        if (!teamLayer) return false
+        return (window.map?.hasLayer(teamLayer.layerGroup) ?? false)
+            && (teamLayer.keys?.has(guid) ?? false)
     }
 
     private createMarker(guid: string, withDetails: boolean = false): L.Marker {
