@@ -71,9 +71,8 @@ span.cnt, td.cnt {
     left: 0;
     top: 0;
     transform: translate(-50%, -50%);
-    background: #111;
-    border: 1px solid rgba(255, 200, 0, 0.65);
-    border-radius: 4px;
+    background: transparent;
+    border: none;
     padding: 3px 7px;
     font-size: 11px;
     font-family: monospace;
@@ -81,6 +80,7 @@ span.cnt, td.cnt {
     text-align: left;
     white-space: nowrap;
     line-height: 1.4;
+    text-shadow: 0 0 2px #000, 0 0 4px #000;
 }
 
 /* Icon-mode variant: compact square padding for the SVG key */
@@ -92,6 +92,10 @@ span.cnt, td.cnt {
 /* Details popup: top-left corner at the portal pixel */
 .key-bubble--details {
     transform: translate(0, 0);
+    background: #111;
+    border: 1px solid rgba(255, 200, 0, 0.65);
+    border-radius: 4px;
+    text-shadow: none;
 }
 
 .export-form fieldset {
