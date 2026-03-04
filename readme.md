@@ -2,7 +2,7 @@
 
 A plugin for [IITC](https://iitc.app) to display the agents inventory (CORE required).
 
-<img alt="Image" src="https://github.com/user-attachments/assets/aacbb924-fca8-4196-a3f9-e0b2507d999f" />
+<img alt="Image" src="https://github.com/user-attachments/assets/1c5a81e1-d4f5-4a3d-8d58-089f6a05c946" />
 
 *If you wonder why this looks so gorgeous (and green)... try the awesome [Blur Theme](https://github.com/Falenone/Blurtheme)* :wink:
 
