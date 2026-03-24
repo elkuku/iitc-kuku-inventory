@@ -64,7 +64,10 @@ export declare namespace IngressInventory {
     interface GameEntity {
         inInventory: InInventory
         portalCoupler: PortalCoupler
-        resource: Resource
+        resource?: Resource
+        resourceWithLevels?: ResourceWithLevels
+        modResource?: ModResource
+        flipCard?: FlipCard
     }
 
     interface InInventory {

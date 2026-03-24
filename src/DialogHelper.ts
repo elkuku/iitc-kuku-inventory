@@ -16,6 +16,8 @@ import {HelperHandlebars, Inventory, KeyInfo} from '../types/Types'
 import {Utility} from './Utility'
 import {CapsuleNamesMap} from './StorageHelper'
 
+type CapsuleItemMap = Record<string, {count: number, tooltip: string}>
+
 class DialogHelper {
 
     private handlebars: HelperHandlebars
@@ -44,11 +46,14 @@ class DialogHelper {
             capsuleNames: (key: string): string => {
                 return this.capsuleNames[key] ?? key
             },
-            eachInMap: (map: Map<any, any>, block: Handlebars.HelperOptions) => {
+            eachInMap: (map: Map<any, any>, capsuleItemsOrBlock: any, maybeBlock?: Handlebars.HelperOptions) => {
+                const capsuleItems: CapsuleItemMap = maybeBlock ? (capsuleItemsOrBlock ?? {}) : {}
+                const block: Handlebars.HelperOptions = maybeBlock ?? capsuleItemsOrBlock
                 let out = ''
                 if (map && map instanceof Map) {
                     for (const [key, value] of map) {
-                        out += block.fn({key, value})
+                        const info = capsuleItems[key]
+                        out += block.fn({key, value, capsuleCount: info?.count ?? 0, capsuleTooltip: info?.tooltip ?? ''})
                     }
                 }
                 return out
@@ -105,20 +110,31 @@ class DialogHelper {
             keys = await this.inventoryHelper.getKeysInfo(),
             cubes = await this.inventoryHelper.getCubesInfo(),
             boosts = await this.inventoryHelper.getBoostsInfo(),
-            keyCapsules = await this.inventoryHelper.getKeyCapsulesInfo()
+            keyCapsules = await this.inventoryHelper.getKeyCapsulesInfo(),
+            capsuleContents = await this.inventoryHelper.getCapsuleContents()
+
+        const capResos = this.aggregateCapsuleItems(capsuleContents, key => key.startsWith('RESONATOR-'))
+        const capWeapons = this.aggregateCapsuleItems(capsuleContents, key => key.startsWith('EMP_BURSTER-') || key.startsWith('ULTRA_STRIKE-') || key === 'ADA-0' || key === 'JARVIS-0')
+        const capMods = this.aggregateCapsuleItems(capsuleContents, key => key.endsWith('-COMMON') || key.endsWith('-RARE') || key.endsWith('-VERY_RARE'))
+        const capCubes = this.aggregateCapsuleItems(capsuleContents, key => key.startsWith('POWER_CUBE-'))
 
         let cntEquipment = 0, cntKeys = 0, cntOther = 0
 
-        cntEquipment += this.processResos(resonators)
-        cntEquipment += this.processWeapons(weapons)
-        cntEquipment += this.processModulators(modulators)
+        cntEquipment += this.processResos(resonators, capResos)
+        cntEquipment += this.processWeapons(weapons, capWeapons)
+        cntEquipment += this.processModulators(modulators, capMods)
 
         cntKeys += this.processKeys(keys)
 
-        cntOther += this.processCubes(cubes)
+        cntOther += this.processCubes(cubes, capCubes)
         cntOther += this.processBoosts(boosts)
 
         this.processKeyCapsules(keyCapsules)
+
+        this.setCapsuleHeader('capHdrResonators', capResos)
+        this.setCapsuleHeader('capHdrWeapons', capWeapons)
+        this.setCapsuleHeader('capHdrMods', capMods)
+        this.setCapsuleHeader('capHdrCubes', capCubes)
 
         this.updateCountField('cntEquipment', cntEquipment)
         this.updateCountField('cntKeys', cntKeys)
@@ -209,9 +225,9 @@ class DialogHelper {
         })
     }
 
-    private processResos(resonators: Map<string, number>) {
+    private processResos(resonators: Map<string, number>, capsuleItems: CapsuleItemMap) {
         this.getContainer('Resonators').innerHTML =
-            this.handlebars.compile(itemsImageTemplate)({items: resonators})
+            this.handlebars.compile(itemsImageTemplate)({items: resonators, capsuleItems})
 
         let cntResos = 0
 
@@ -224,7 +240,7 @@ class DialogHelper {
         return cntResos
     }
 
-    private processWeapons(weapons: Map<string, number>) {
+    private processWeapons(weapons: Map<string, number>, capsuleItems: CapsuleItemMap) {
         const itemsTemplate: HandlebarsTemplateDelegate = this.handlebars.compile(itemsImageTemplate)
 
         const bursters = new Map<string, number>
@@ -250,8 +266,8 @@ class DialogHelper {
 
         const total = cntBursters + cntStrikes + cntFlips
 
-        this.getContainer('Bursters').innerHTML = itemsTemplate({items: bursters})
-        this.getContainer('Strikes').innerHTML = itemsTemplate({items: strikes})
+        this.getContainer('Bursters').innerHTML = itemsTemplate({items: bursters, capsuleItems})
+        this.getContainer('Strikes').innerHTML = itemsTemplate({items: strikes, capsuleItems})
 
         this.updateCountField('cntBursters', cntBursters)
         this.updateCountField('cntStrikes', cntStrikes)
@@ -262,7 +278,7 @@ class DialogHelper {
         return total
     }
 
-    private processModulators(modulators: Map<string, number>) {
+    private processModulators(modulators: Map<string, number>, capsuleItems: CapsuleItemMap) {
         const itemsTemplate: HandlebarsTemplateDelegate = this.handlebars.compile(itemsImageTemplate)
 
         const shields = new Map<string, number>,
@@ -299,13 +315,13 @@ class DialogHelper {
         }
 
         this.getContainer('Shields').innerHTML = itemsTemplate({
-            items: Utility.sortMapByCompoundKey(shields, ['RES_SHIELD', 'EXTRA_SHIELD'], rarities)
+            items: Utility.sortMapByCompoundKey(shields, ['RES_SHIELD', 'EXTRA_SHIELD'], rarities), capsuleItems
         })
         this.getContainer('HackMods').innerHTML = itemsTemplate({
-            items: Utility.sortMapByCompoundKey(hackMods, ['HEATSINK', 'MULTIHACK'], rarities)
+            items: Utility.sortMapByCompoundKey(hackMods, ['HEATSINK', 'MULTIHACK'], rarities), capsuleItems
         })
         this.getContainer('OtherMods').innerHTML = itemsTemplate({
-            items: Utility.sortMapByKey(otherMods, otherModsTypes)
+            items: Utility.sortMapByKey(otherMods, otherModsTypes), capsuleItems
         })
 
         const total = cntShields + cntHack + cntOther
@@ -353,9 +369,9 @@ class DialogHelper {
         return total
     }
 
-    private processCubes(cubes: Map<string, number>) {
+    private processCubes(cubes: Map<string, number>, capsuleItems: CapsuleItemMap) {
         this.getContainer('Cubes').innerHTML =
-            this.handlebars.compile(itemsContainerTemplate)({items: cubes})
+            this.handlebars.compile(itemsContainerTemplate)({items: cubes, capsuleItems})
 
         let count = 0
 
@@ -405,6 +421,34 @@ class DialogHelper {
         })
 
         return names
+    }
+
+    private setCapsuleHeader(spanId: string, capsuleItems: CapsuleItemMap): void {
+        const element = document.getElementById(`${this.pluginName}-${spanId}`)
+        if (!element) return
+        const total = Object.values(capsuleItems).reduce((sum, info) => sum + info.count, 0)
+        element.innerHTML = total > 0 ? ` 📦 <span class="cnt">${total}</span>` : ''
+    }
+
+    private aggregateCapsuleItems(capsuleContents: Inventory.CapsuleContents[], filter: (key: string) => boolean): CapsuleItemMap {
+        const perItem: Record<string, Record<string, number>> = {}
+        for (const capsule of capsuleContents) {
+            const name = this.capsuleNames[capsule.differentiator] ?? capsule.differentiator
+            for (const [key, count] of Object.entries(capsule.items)) {
+                if (filter(key)) {
+                    perItem[key] ??= {}
+                    perItem[key][name] = (perItem[key][name] ?? 0) + count
+                }
+            }
+        }
+        const result: CapsuleItemMap = {}
+        for (const [key, capsuleMap] of Object.entries(perItem)) {
+            result[key] = {
+                count: Object.values(capsuleMap).reduce((sum, n) => sum + n, 0),
+                tooltip: Object.entries(capsuleMap).map(([name, n]) => `${name}: ${n}`).join('\n'),
+            }
+        }
+        return result
     }
 
     private getContainer(name: string): Element {

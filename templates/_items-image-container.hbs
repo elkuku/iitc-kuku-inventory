@@ -1,9 +1,10 @@
 <table>
-    {{#eachInMap items}}
+    {{#eachInMap items capsuleItems}}
         {{#if value}}
             <tr>
                 <td class="icon img-{{key}}" title="{{translateKey key}}"></td>
                 <td class="cnt">{{value}}</td>
+                <td class="capsule-cnt">{{#if capsuleCount}}<span title="{{capsuleTooltip}}">📦 {{capsuleCount}}</span>{{/if}}</td>
             </tr>
         {{/if}}
     {{/eachInMap}}

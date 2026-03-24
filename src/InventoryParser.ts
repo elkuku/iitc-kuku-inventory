@@ -12,6 +12,8 @@ export class InventoryParser {
             cubes: [],
             boosts: [],
             keyCapsules: [],
+            capsules: [],
+            capsuleContents: [],
         }
 
         for (const whyIsThisAnArray of items) {
@@ -94,7 +96,19 @@ export class InventoryParser {
                 case 'BOOSTED_POWER_CUBE': // hyper cube
                     inventory.cubes.push({level: 9})
                     break
-                case 'CAPSULE': // TODO process capsules
+                case 'CAPSULE': {
+                    const stackableItems: IngressInventory.ContainerItem[] = object.container.stackableItems
+                    const keys = this.listKeysInCapsule(stackableItems, true)
+                    if (keys.length > 0) {
+                        inventory.capsules.push({
+                            differentiator: object.moniker.differentiator,
+                            count: object.container.currentCount,
+                            keys,
+                        })
+                    }
+                    this.parseCapsuleNonKeyItems(inventory, object.moniker.differentiator, stackableItems)
+                    break
+                }
                 case 'KINETIC_CAPSULE':
                 case 'ENTITLEMENT': // ???
                 case 'DRONE':
@@ -110,10 +124,71 @@ export class InventoryParser {
         return inventory
     }
 
-    private listKeysInCapsule(items: IngressInventory.ContainerItem[]): Inventory.KeyCapsuleItem[] {
+    private parseCapsuleNonKeyItems(
+        inventory: Inventory.Items,
+        differentiator: string,
+        stackableItems: IngressInventory.ContainerItem[]
+    ): void {
+        const capsuleItems: Record<string, number> = {}
+
+        for (const capsuleItem of stackableItems) {
+            const entity = capsuleItem.exampleGameEntity[2]
+            const count = capsuleItem.itemGuids.length
+
+            if (entity.resource?.resourceType === 'PORTAL_LINK_KEY') continue
+
+            let itemKey: string | undefined
+
+            if (entity.resourceWithLevels) {
+                const {resourceType: type, level} = entity.resourceWithLevels
+                switch (type) {
+                    case 'EMITTER_A':
+                        itemKey = `RESONATOR-${level}`
+                        for (let i = 0; i < count; i++) inventory.resonators.push({level})
+                        break
+                    case 'EMP_BURSTER':
+                    case 'ULTRA_STRIKE':
+                        itemKey = `${type}-${level}`
+                        for (let i = 0; i < count; i++) inventory.weapons.push({type, level})
+                        break
+                    case 'POWER_CUBE':
+                        itemKey = `POWER_CUBE-${level}`
+                        for (let i = 0; i < count; i++) inventory.cubes.push({level})
+                        break
+                    default:
+                        console.warn(`Unknown capsule item type: ${type}`)
+                }
+            } else if (entity.resource?.resourceType === 'BOOSTED_POWER_CUBE') {
+                itemKey = 'POWER_CUBE-9'
+                for (let i = 0; i < count; i++) inventory.cubes.push({level: 9})
+            } else if (entity.modResource) {
+                itemKey = `${entity.modResource.resourceType}-${entity.modResource.rarity}`
+                for (let i = 0; i < count; i++) inventory.mods.push({
+                    type: entity.modResource.resourceType,
+                    rarity: entity.modResource.rarity,
+                })
+            } else if (entity.resource?.resourceType === 'FLIP_CARD' && entity.flipCard) {
+                itemKey = `${entity.flipCard.flipCardType}-0`
+                for (let i = 0; i < count; i++) inventory.weapons.push({type: entity.flipCard.flipCardType, level: 0})
+            }
+
+            if (itemKey) {
+                capsuleItems[itemKey] = (capsuleItems[itemKey] ?? 0) + count
+            }
+        }
+
+        if (Object.keys(capsuleItems).length > 0) {
+            inventory.capsuleContents.push({differentiator, items: capsuleItems})
+        }
+    }
+
+    private listKeysInCapsule(items: IngressInventory.ContainerItem[], filterKeysOnly = false): Inventory.KeyCapsuleItem[] {
         const keys = []
         for (const capsuleItem of items) {
-            const coupler = capsuleItem.exampleGameEntity[2].portalCoupler
+            const entity = capsuleItem.exampleGameEntity[2]
+            if (filterKeysOnly && entity.resource?.resourceType !== 'PORTAL_LINK_KEY') continue
+
+            const coupler = entity.portalCoupler
             const parts = coupler.portalLocation.split(',')
 
             const key: Inventory.Key = {

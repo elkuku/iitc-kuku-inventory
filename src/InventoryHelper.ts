@@ -50,7 +50,7 @@ export class InventoryHelper {
             keyInfo.atHand!++
             keyInfo.total++
 
-            for (const capsule of inventory.keyCapsules) {
+            for (const capsule of [...inventory.keyCapsules, ...inventory.capsules]) {
                 if (!(keyInfo.capsules?.has(capsule.differentiator))) {
                     for (const k of capsule.keys) {
                         if (k.key.guid === key.guid) {
@@ -65,7 +65,7 @@ export class InventoryHelper {
         }
 
         // Search for keys only in capsules
-        for (const capsule of inventory.keyCapsules) {
+        for (const capsule of [...inventory.keyCapsules, ...inventory.capsules]) {
             for (const k of capsule.keys) {
                 if (keyInfos.has(k.key.guid)) {
                     keyInfo = keyInfos.get(k.key.guid)
@@ -96,6 +96,11 @@ export class InventoryHelper {
         }
 
         return keyInfos
+    }
+
+    public async getCapsuleContents(): Promise<Inventory.CapsuleContents[]> {
+        const inventory = await this.getInventory()
+        return inventory.capsuleContents
     }
 
     public async getKeyCapsulesInfo(): Promise<KeyCapsule[]> {

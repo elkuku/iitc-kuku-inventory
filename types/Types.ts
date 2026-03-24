@@ -8,6 +8,13 @@ export namespace Inventory {
         cubes: Cube[]
         boosts: Boost[]
         keyCapsules: KeyCapsule[]
+        capsules: KeyCapsule[]
+        capsuleContents: CapsuleContents[]
+    }
+
+    export interface CapsuleContents {
+        differentiator: string
+        items: Record<string, number>
     }
 
     export interface Resonator {
