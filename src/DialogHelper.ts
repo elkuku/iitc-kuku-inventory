@@ -16,7 +16,7 @@ import {HelperHandlebars, Inventory, KeyInfo} from '../types/Types'
 import {Utility} from './Utility'
 import {CapsuleNamesMap} from './StorageHelper'
 
-type CapsuleItemMap = Record<string, {count: number, tooltip: string}>
+type CapsuleItemMap = Record<string, { count: number, tooltip: string }>
 
 class DialogHelper {
 
@@ -27,7 +27,8 @@ class DialogHelper {
         private pluginName: string,
         private title: string,
         private inventoryHelper: InventoryHelper,
-    ) {}
+    ) {
+    }
 
     public setCapsuleNames(capsuleNames: CapsuleNamesMap) {
         this.capsuleNames = capsuleNames
@@ -53,7 +54,12 @@ class DialogHelper {
                 if (map && map instanceof Map) {
                     for (const [key, value] of map) {
                         const info = capsuleItems[key]
-                        out += block.fn({key, value, capsuleCount: info?.count ?? 0, capsuleTooltip: info?.tooltip ?? ''})
+                        out += block.fn({
+                            key,
+                            value,
+                            capsuleCount: info?.count ?? 0,
+                            capsuleTooltip: info?.tooltip ?? ''
+                        })
                     }
                 }
                 return out
@@ -82,11 +88,11 @@ class DialogHelper {
         }
 
         return window.dialog({
-            id: this.pluginName,
+            id: 'tb-btn-' + this.pluginName,
             title: this.title,
             html: template(data),
-            width: 800,
-            height: 700,
+            width: 'auto',
+            height: 'auto',
             buttons: [],
         }).parent()
     }

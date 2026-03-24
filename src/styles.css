@@ -32,6 +32,7 @@ table.inventoryTable th[data-type]:hover {
 
 table.inventoryTable th {
     text-align: center;
+    white-space: nowrap;
 }
 
 table.inventoryTable td {
